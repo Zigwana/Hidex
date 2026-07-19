@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Hidex Chat</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="box chat-box">
+
+
+<div id="chatHeader">
+
+
+<img
+
+id="friendImage"
+
+src="images/default.png"
+
+class="user-image"
+
+
+>
+
+
+<div>
+
+<h2 id="friendName">
+Chat
+</h2>
+
+
+<p id="friendStatus">
+Offline
+</p>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div id="messages">
+
+</div>
+
+
+
+
+
+<div class="chat-input">
+
+
+<input
+
+id="message"
+
+placeholder="Type message..."
+
+>
+
+
+<button id="send">
+
+Send
+
+</button>
+
+
+</div>
+
+
+
+
+<br>
+
+
+<button onclick="location.href='chats.html'">
+
+Back to Chats
+
+</button>
+
+
+
+<br><br>
+
+
+
+<button onclick="location.href='home.html'">
+
+Home
+
+</button>
+
+
+
+</div>
+
+
+  <script type="module" src="js/firebase.js"></script>
+
+<script type="module" src="js/presence.js"></script>
+
+<script type="module" src="js/home.js"></script>
+<script type="module" src="js/auth-check.js"></script>
+
+<script type="module" src="js/chat.js"></script>
+
+
+</body>
+
+</html>
