@@ -1,4 +1,3 @@
-
 // Hidex Global Chat
 
 
@@ -63,6 +62,18 @@ document.getElementById("message");
 const sendButton =
 
 document.getElementById("send");
+
+
+
+
+
+
+
+if(!messagesBox || !messageInput || !sendButton){
+
+console.log("Global chat elements missing");
+
+}
 
 
 
@@ -213,6 +224,8 @@ minute:"2-digit"
 
 
 
+
+
 ${
 
 msg.senderId === currentUser.uid
@@ -355,6 +368,7 @@ messageInput.focus();
 
 
 
+
 if(sendButton){
 
 
@@ -404,6 +418,47 @@ sendMessage();
 
 
 
+// Confirm delete
+
+
+async function confirmDelete(messagePath){
+
+
+
+let answer = confirm(
+
+"Delete this message?"
+
+);
+
+
+
+
+
+if(!answer){
+
+return;
+
+}
+
+
+
+
+
+await deleteDoc(messagePath);
+
+
+
+}
+
+
+
+
+
+
+
+
+
 // Delete global message
 
 
@@ -435,7 +490,7 @@ e.target.dataset.id;
 
 
 
-await deleteDoc(
+await confirmDelete(
 
 doc(
 

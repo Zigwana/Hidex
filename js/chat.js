@@ -735,7 +735,7 @@ if(confirmDelete){
 
 
 
-await deleteDoc(
+confirmDelete(
 
 doc(
 
@@ -747,14 +747,13 @@ chatId,
 
 "messages",
 
-selectedMessage
+id
 
 )
 
 );
 
 
-
 }
 
 
@@ -766,3 +765,19 @@ selectedMessage
 }
 
 );
+
+
+async function confirmDelete(messagePath){
+
+let answer = confirm(
+"Delete this message?"
+);
+
+
+if(answer){
+
+await deleteDoc(messagePath);
+
+}
+
+}
