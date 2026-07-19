@@ -1,3 +1,6 @@
+// Hidex Home.js
+
+
 import {auth,db} from "./firebase.js";
 
 
@@ -10,6 +13,7 @@ signOut
 from
 
 "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
 
 
 import {
@@ -32,9 +36,7 @@ from
 
 
 
-let user =
-
-JSON.parse(
+let user = JSON.parse(
 
 localStorage.getItem("hidexUser")
 
@@ -54,9 +56,13 @@ location.href="index.html";
 
 
 
+// Elements
+
+
 const profile =
 
 document.getElementById("profile");
+
 
 
 const notifications =
@@ -65,10 +71,21 @@ document.getElementById("notifications");
 
 
 
+const logoutBtn =
+
+document.getElementById("logout");
 
 
 
-// Show profile
+
+
+
+
+// Show profile only if it exists
+
+
+if(profile){
+
 
 
 profile.innerHTML = `
@@ -81,6 +98,7 @@ src="${user.profileImage || 'images/default.png'}"
 
 class="user-image"
 
+onerror="this.src='images/default.png'"
 
 >
 
@@ -110,13 +128,19 @@ ${user.hidexId}
 
 
 
+}
 
 
 
 
 
 
-// Online status
+
+
+// Update online status
+
+
+try{
 
 
 await updateDoc(
@@ -135,15 +159,28 @@ user.uid
 
 online:true,
 
-lastSeen:
-
-serverTimestamp()
+lastSeen:serverTimestamp()
 
 }
 
 );
 
 
+}
+
+catch(error){
+
+
+console.log(
+
+"Online status error:",
+
+error
+
+);
+
+
+}
 
 
 
@@ -151,7 +188,13 @@ serverTimestamp()
 
 
 
-// Load unread messages
+
+
+// Notifications
+
+
+if(notifications){
+
 
 
 const notificationQuery = query(
@@ -192,7 +235,6 @@ false
 
 
 
-
 onSnapshot(
 
 notificationQuery,
@@ -204,10 +246,12 @@ notifications.innerHTML="";
 
 
 
+
+
 if(snapshot.empty){
 
 
-notifications.innerHTML =
+notifications.innerHTML=
 
 "No new messages";
 
@@ -222,11 +266,11 @@ return;
 
 
 
+
 snapshot.forEach((item)=>{
 
 
-
-let data = item.data();
+let data=item.data();
 
 
 
@@ -239,10 +283,9 @@ notifications.innerHTML += `
 <div class="user-card">
 
 
-
 <h3>
 
-${data.senderName}
+${data.senderName || "User"}
 
 </h3>
 
@@ -250,18 +293,16 @@ ${data.senderName}
 
 <p>
 
-${data.message}
+${data.message || ""}
 
 </p>
 
 
 
-<button onclick="openChat(
-'${data.chatFriendId}',
-'${data.chatFriend}',
-'${item.id}'
-)">
+<button class="reply-btn">
+
 Reply
+
 </button>
 
 
@@ -269,41 +310,24 @@ Reply
 </div>
 
 
-
 `;
 
 
 
-});
-
-
-
-}
-
-);
 
 
 
 
+let button =
+
+notifications.lastElementChild
+
+.querySelector(".reply-btn");
 
 
 
 
-
-
-
-// Open chat
-
-
-window.openChat=function(
-
-id,
-
-name,
-
-notificationId
-
-){
+button.onclick=()=>{
 
 
 
@@ -311,7 +335,7 @@ localStorage.setItem(
 
 "chatFriendId",
 
-id
+data.chatFriendId
 
 );
 
@@ -321,15 +345,10 @@ localStorage.setItem(
 
 "chatFriend",
 
-name
+data.chatFriend
 
 );
 
-
-
-
-
-// Mark notification read
 
 
 updateDoc(
@@ -340,7 +359,7 @@ db,
 
 "notifications",
 
-notificationId
+item.id
 
 ),
 
@@ -354,14 +373,28 @@ read:true
 
 
 
-
-
-
 location.href="chat.html";
 
 
 
 };
+
+
+
+
+
+});
+
+
+
+}
+
+);
+
+
+
+}
+
 
 
 
@@ -373,12 +406,15 @@ location.href="chat.html";
 // Logout
 
 
-document
+if(logoutBtn){
 
-.getElementById("logout")
 
-.onclick = async()=>{
 
+logoutBtn.onclick = async()=>{
+
+
+
+try{
 
 
 await updateDoc(
@@ -397,9 +433,7 @@ user.uid
 
 online:false,
 
-lastSeen:
-
-serverTimestamp()
+lastSeen:serverTimestamp()
 
 }
 
@@ -407,11 +441,21 @@ serverTimestamp()
 
 
 
+}
+
+catch(error){
+
+
+console.log(error);
+
+
+}
+
+
+
 
 
 await signOut(auth);
-
-
 
 
 
@@ -423,9 +467,11 @@ localStorage.removeItem(
 
 
 
-
-
 location.href="index.html";
 
 
+
 };
+
+
+}

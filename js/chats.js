@@ -1,3 +1,6 @@
+// Hidex Chats.js
+
+
 import {db} from "./firebase.js";
 
 
@@ -51,9 +54,7 @@ document.getElementById("chatList");
 
 
 
-
-
-const q = query(
+const chatsQuery = query(
 
 collection(
 
@@ -82,11 +83,23 @@ currentUser.uid
 
 
 
+onSnapshot(chatsQuery, async(snapshot)=>{
 
-onSnapshot(q,async(snapshot)=>{
+
+
+console.log(
+
+"Chats found:",
+
+snapshot.size
+
+);
+
+
 
 
 chatList.innerHTML="";
+
 
 
 
@@ -96,8 +109,8 @@ if(snapshot.empty){
 
 
 chatList.innerHTML =
-"No chats yet";
 
+"<p>No chats yet</p>";
 
 return;
 
@@ -116,29 +129,37 @@ let chats=[];
 
 
 
-snapshot.forEach(doc=>{
+snapshot.forEach((item)=>{
+
+
+console.log(
+
+"CHAT DATA:",
+
+item.data()
+
+);
+
 
 
 chats.push({
 
-id:doc.id,
+id:item.id,
 
-...doc.data()
+...item.data()
+
+});
+
 
 });
 
 
 
-});
 
 
 
 
-
-
-
-
-// newest first
+// Sort newest first
 
 
 chats.sort((a,b)=>{
@@ -151,14 +172,24 @@ return 0;
 }
 
 
-return b.updatedAt.seconds -
 
-a.updatedAt.seconds;
+return (
+
+b.updatedAt.seconds || 0
+
+)
+
+-
+
+(
+
+a.updatedAt.seconds || 0
+
+);
+
 
 
 });
-
-
 
 
 
@@ -174,9 +205,19 @@ let otherUser =
 
 chat.users.find(
 
-id=>id !== currentUser.uid
+id => id !== currentUser.uid
 
 );
+
+
+
+
+
+if(!otherUser){
+
+continue;
+
+}
 
 
 
@@ -185,7 +226,20 @@ id=>id !== currentUser.uid
 
 let name =
 
-chat.names[otherUser];
+"Unknown User";
+
+
+
+
+
+if(chat.names && chat.names[otherUser]){
+
+
+name = chat.names[otherUser];
+
+
+}
+
 
 
 
@@ -193,15 +247,18 @@ chat.names[otherUser];
 
 let image =
 
-"images/default.png";
+"";
 
 
 
 
 
-let userDoc =
 
-await getDoc(
+
+// Try new users collection
+
+
+let userDoc = await getDoc(
 
 doc(
 
@@ -217,14 +274,28 @@ otherUser
 
 
 
-if(userDoc.exists()){
 
 
-image =
 
-userDoc.data().profileImage ||
+// Try old collection if not found
 
-image;
+
+if(!userDoc.exists()){
+
+
+userDoc = await getDoc(
+
+doc(
+
+db,
+
+"hidex_users",
+
+otherUser
+
+)
+
+);
 
 
 }
@@ -234,12 +305,32 @@ image;
 
 
 
+if(userDoc.exists()){
+
+
+let data = userDoc.data();
+
+
+image =
+
+data.profileImage ||
+
+"";
+
+
+
+}
+
+
+
+
+
+
+
 chatList.innerHTML += `
 
 
-
 <div class="chat-card">
-
 
 
 <img
@@ -248,9 +339,9 @@ src="${image}"
 
 class="user-image"
 
+onerror="this.style.display='none'"
 
 >
-
 
 
 
@@ -267,10 +358,9 @@ ${name}
 
 <p>
 
-${chat.lastMessage || ""}
+${chat.lastMessage || "No messages"}
 
 </p>
-
 
 
 </div>
@@ -278,13 +368,7 @@ ${chat.lastMessage || ""}
 
 
 
-<button onclick="openChat(
-
-'${otherUser}',
-
-'${name}'
-
-)">
+<button class="open-chat">
 
 Open
 
@@ -295,34 +379,30 @@ Open
 </div>
 
 
-
 `;
 
 
 
-}
-
-
-
-});
 
 
 
 
+let buttons =
+
+document.querySelectorAll(".open-chat");
 
 
 
+buttons[buttons.length-1]
 
-
-window.openChat=function(id,name){
-
+.onclick = ()=>{
 
 
 localStorage.setItem(
 
 "chatFriendId",
 
-id
+otherUser
 
 );
 
@@ -338,8 +418,17 @@ name
 
 
 
-
 location.href="chat.html";
 
 
 };
+
+
+
+}
+
+
+
+
+
+});

@@ -1,12 +1,19 @@
+// Hidex Private Chat.js
+
+
 import {db} from "./firebase.js";
 
 
 import {
 
 collection,
+addDoc,
 query,
-where,
-onSnapshot
+orderBy,
+onSnapshot,
+serverTimestamp,
+setDoc,
+doc
 
 }
 
@@ -17,13 +24,14 @@ from
 
 
 
-let currentUser =
 
-JSON.parse(
+let currentUser = JSON.parse(
 
 localStorage.getItem("hidexUser")
 
 );
+
+
 
 
 
@@ -36,31 +44,128 @@ location.href="index.html";
 
 
 
-let chatList =
 
-document.getElementById("chatList");
+let friendId =
 
-
-
+localStorage.getItem("chatFriendId");
 
 
-let chatsQuery = query(
+
+let friendName =
+
+localStorage.getItem("chatFriend");
+
+
+
+
+
+
+if(!friendId){
+
+location.href="users.html";
+
+}
+
+
+
+
+
+
+const friendTitle =
+
+document.getElementById("friendName");
+
+
+
+if(friendTitle){
+
+friendTitle.innerHTML = friendName || "Chat";
+
+}
+
+
+
+
+
+
+// Create same chat ID for both users
+
+
+let ids = [
+
+currentUser.uid,
+
+friendId
+
+];
+
+
+
+ids.sort();
+
+
+
+let chatId = ids.join("_");
+
+
+
+
+
+console.log("Chat ID:",chatId);
+
+
+
+
+
+
+
+
+const messagesBox =
+
+document.getElementById("messages");
+
+
+
+const messageInput =
+
+document.getElementById("message");
+
+
+
+const sendButton =
+
+document.getElementById("send");
+
+
+
+
+
+
+
+
+
+// Load messages
+
+
+const messageQuery = query(
 
 collection(
 
 db,
 
-"conversations"
+"chats",
+
+chatId,
+
+"messages"
 
 ),
 
-where(
+orderBy(
 
-"users",
+"time",
 
-"array-contains",
-
-currentUser.uid
+"asc"
 
 )
 
@@ -71,10 +176,11 @@ currentUser.uid
 
 
 
-onSnapshot(chatsQuery,(snapshot)=>{
+
+onSnapshot(messageQuery,(snapshot)=>{
 
 
-chatList.innerHTML="";
+messagesBox.innerHTML="";
 
 
 
@@ -83,9 +189,9 @@ chatList.innerHTML="";
 if(snapshot.empty){
 
 
-chatList.innerHTML=
+messagesBox.innerHTML=
 
-"<p>No chats yet</p>";
+"<p>No messages yet</p>";
 
 
 return;
@@ -98,67 +204,53 @@ return;
 
 
 
-snapshot.forEach((doc)=>{
+
+snapshot.forEach((item)=>{
 
 
-let chat = doc.data();
-
-
-
-let otherUser;
-
-
-
-if(chat.users[0] === currentUser.uid){
-
-otherUser = chat.names[chat.users[1]];
-
-}
-
-else{
-
-otherUser = chat.names[chat.users[0]];
-
-}
+let msg=item.data();
 
 
 
 
 
+let type =
+
+msg.senderId === currentUser.uid
+
+?
+
+"sent"
+
+:
+
+"received";
 
 
-chatList.innerHTML += `
 
 
-<div class="chat-card">
 
 
-<div class="chat-info">
+
+messagesBox.innerHTML += `
 
 
-<h3>
-
-${otherUser}
-
-</h3>
+<div class="message ${type}">
 
 
 <p>
 
-${chat.lastMessage || "No messages"}
+${msg.text}
 
 </p>
 
 
-</div>
+<small>
 
+${msg.sender}
 
+</small>
 
-<button onclick="openChat('${doc.id}','${otherUser}')">
-
-Open
-
-</button>
 
 
 </div>
@@ -172,6 +264,15 @@ Open
 
 
 
+
+
+
+messagesBox.scrollTop =
+
+messagesBox.scrollHeight;
+
+
+
 });
 
 
@@ -180,50 +281,216 @@ Open
 
 
 
-window.openChat = function(id,name){
-
-
-
-let ids = id.split("_");
-
-
-
-let friendId =
-
-ids[0] === currentUser.uid
-
-?
-
-ids[1]
-
-:
-
-ids[0];
 
 
 
 
-localStorage.setItem(
+// Send message
 
-"chatFriendId",
+
+async function sendMessage(){
+
+
+
+let text =
+
+messageInput.value.trim();
+
+
+
+
+
+if(text===""){
+
+return;
+
+}
+
+
+
+
+
+
+
+await addDoc(
+
+collection(
+
+db,
+
+"chats",
+
+chatId,
+
+"messages"
+
+),
+
+{
+
+
+sender:
+
+currentUser.username,
+
+
+senderId:
+
+currentUser.uid,
+
+
+text:text,
+
+
+time:
+
+serverTimestamp()
+
+
+
+}
+
+);
+
+
+
+
+
+
+// create/update conversation
+
+
+await setDoc(
+
+doc(
+
+db,
+
+"conversations",
+
+chatId
+
+),
+
+{
+
+
+users:[
+
+currentUser.uid,
 
 friendId
 
+],
+
+
+
+names:{
+
+
+[currentUser.uid]:
+
+currentUser.username,
+
+
+[friendId]:
+
+friendName
+
+
+},
+
+
+
+lastMessage:text,
+
+
+updatedAt:
+
+serverTimestamp()
+
+
+
+},
+
+
+{
+
+merge:true
+
+}
+
 );
 
 
 
-localStorage.setItem(
 
-"chatFriend",
 
-name
+
+
+// CLEAR INPUT
+
+
+messageInput.value="";
+
+
+messageInput.focus();
+
+
+
+}
+
+
+
+
+
+
+
+
+// Send button
+
+
+if(sendButton){
+
+
+sendButton.onclick = sendMessage;
+
+
+}
+
+
+
+
+
+
+
+// Enter key send
+
+
+if(messageInput){
+
+
+
+messageInput.addEventListener(
+
+"keydown",
+
+(e)=>{
+
+
+if(e.key==="Enter"){
+
+
+sendMessage();
+
+
+}
+
+
+}
 
 );
 
-
-
-location.href="chat.html";
 
 
 }
