@@ -1,27 +1,18 @@
-// Hidex Chat.js
-
-
 import {db} from "./firebase.js";
 
 
 import {
 
 collection,
-addDoc,
 query,
-orderBy,
-onSnapshot,
-serverTimestamp,
-setDoc,
-doc,
-getDoc
+where,
+onSnapshot
 
 }
 
 from
 
 "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
 
 
 
@@ -36,8 +27,6 @@ localStorage.getItem("hidexUser")
 
 
 
-
-
 if(!currentUser){
 
 location.href="index.html";
@@ -47,117 +36,31 @@ location.href="index.html";
 
 
 
+let chatList =
 
-let friendId =
+document.getElementById("chatList");
 
-localStorage.getItem("chatFriendId");
 
 
 
-let friendName =
 
-localStorage.getItem("chatFriend");
-
-
-
-
-
-
-
-if(!friendId){
-
-location.href="users.html";
-
-}
-
-
-
-
-
-
-// Show friend name
-
-document
-
-.getElementById("friendName")
-
-.innerHTML = friendName || "Chat";
-
-
-
-
-
-
-
-
-
-// Create unique chat ID
-
-let ids = [
-
-currentUser.uid,
-
-friendId
-
-];
-
-
-
-ids.sort();
-
-
-
-let chatId = ids.join("_");
-
-
-
-
-console.log("Current user:", currentUser);
-
-console.log("Friend ID:", friendId);
-
-console.log("Chat ID:", chatId);
-
-
-
-
-
-
-
-
-
-const messagesBox =
-
-document.getElementById("messages");
-
-
-
-
-
-
-
-// Load messages
-
-
-const messageQuery = query(
+let chatsQuery = query(
 
 collection(
 
 db,
 
-"chats",
-
-chatId,
-
-"messages"
+"conversations"
 
 ),
 
-orderBy(
+where(
 
-"time",
+"users",
 
-"asc"
+"array-contains",
+
+currentUser.uid
 
 )
 
@@ -168,15 +71,10 @@ orderBy(
 
 
 
-onSnapshot(messageQuery,(snapshot)=>{
+onSnapshot(chatsQuery,(snapshot)=>{
 
 
-console.log("Messages found:", snapshot.size);
-
-
-
-messagesBox.innerHTML="";
-
+chatList.innerHTML="";
 
 
 
@@ -185,9 +83,9 @@ messagesBox.innerHTML="";
 if(snapshot.empty){
 
 
-messagesBox.innerHTML =
+chatList.innerHTML=
 
-"<p>No messages yet</p>";
+"<p>No chats yet</p>";
 
 
 return;
@@ -200,57 +98,26 @@ return;
 
 
 
-
-snapshot.forEach((item)=>{
-
-
-let msg = item.data();
+snapshot.forEach((doc)=>{
 
 
-
-console.log("Message:",msg);
+let chat = doc.data();
 
 
 
-
-
-let bubble =
-
-msg.senderId === currentUser.uid
-
-?
-
-"sent"
-
-:
-
-"received";
+let otherUser;
 
 
 
+if(chat.users[0] === currentUser.uid){
 
+otherUser = chat.names[chat.users[1]];
 
+}
 
+else{
 
-let time="";
-
-
-
-if(msg.time){
-
-
-time =
-
-msg.time.toDate()
-
-.toLocaleTimeString([],{
-
-hour:"2-digit",
-
-minute:"2-digit"
-
-});
-
+otherUser = chat.names[chat.users[0]];
 
 }
 
@@ -260,27 +127,38 @@ minute:"2-digit"
 
 
 
+chatList.innerHTML += `
 
-messagesBox.innerHTML += `
+
+<div class="chat-card">
 
 
-<div class="message ${bubble}">
+<div class="chat-info">
+
+
+<h3>
+
+${otherUser}
+
+</h3>
 
 
 <p>
 
-${msg.text}
+${chat.lastMessage || "No messages"}
 
 </p>
 
 
-<small>
+</div>
 
-${time}
 
-${bubble==="sent" ? " ✓✓" : ""}
 
-</small>
+<button onclick="openChat('${doc.id}','${otherUser}')">
+
+Open
+
+</button>
 
 
 </div>
@@ -294,14 +172,6 @@ ${bubble==="sent" ? " ✓✓" : ""}
 
 
 
-
-
-messagesBox.scrollTop =
-
-messagesBox.scrollHeight;
-
-
-
 });
 
 
@@ -310,212 +180,50 @@ messagesBox.scrollHeight;
 
 
 
+window.openChat = function(id,name){
 
 
 
+let ids = id.split("_");
 
-// Send message
 
 
-async function sendMessage(){
+let friendId =
 
+ids[0] === currentUser.uid
 
+?
 
-let input =
+ids[1]
 
-document.getElementById("message");
+:
 
+ids[0];
 
 
-let text =
 
-input.value.trim();
 
+localStorage.setItem(
 
-
-
-
-
-if(text===""){
-
-return;
-
-}
-
-
-
-
-
-
-
-await addDoc(
-
-collection(
-
-db,
-
-"chats",
-
-chatId,
-
-"messages"
-
-),
-
-{
-
-
-sender:
-
-currentUser.username,
-
-
-senderId:
-
-currentUser.uid,
-
-
-text:text,
-
-
-time:
-
-serverTimestamp()
-
-
-
-}
-
-);
-
-
-
-
-
-
-// Save conversation
-
-
-await setDoc(
-
-doc(
-
-db,
-
-"conversations",
-
-chatId
-
-),
-
-{
-
-
-users:[
-
-currentUser.uid,
+"chatFriendId",
 
 friendId
 
-],
+);
 
 
 
-names:{
+localStorage.setItem(
 
+"chatFriend",
 
-[currentUser.uid]:
-
-currentUser.username,
-
-
-[friendId]:
-
-friendName
-
-
-},
-
-
-
-lastMessage:text,
-
-
-updatedAt:
-
-serverTimestamp()
-
-
-
-},
-
-{
-
-merge:true
-
-}
+name
 
 );
 
 
 
-
-
-
-
-input.value="";
-
+location.href="chat.html";
 
 
 }
-
-
-
-
-
-
-
-
-
-// Button send
-
-
-document
-
-.getElementById("send")
-
-.onclick = sendMessage;
-
-
-
-
-
-
-
-
-// Enter send
-
-
-document
-
-.getElementById("message")
-
-.addEventListener(
-
-"keydown",
-
-(e)=>{
-
-
-if(e.key==="Enter"){
-
-
-sendMessage();
-
-
-}
-
-
-}
-
-);
