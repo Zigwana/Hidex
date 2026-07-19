@@ -51,7 +51,13 @@ const messagesBox =
 
 document.getElementById("messages");
 
+if(messagesBox){
 
+messagesBox.innerHTML =
+
+"<p>Loading global chat...</p>";
+
+}
 
 const messageInput =
 
