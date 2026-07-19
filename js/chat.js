@@ -1,4 +1,4 @@
-// Hidex Private Chat.js
+// Hidex Chat.js
 
 
 import {db} from "./firebase.js";
@@ -13,7 +13,9 @@ orderBy,
 onSnapshot,
 serverTimestamp,
 setDoc,
-doc
+doc,
+deleteDoc,
+getDoc
 
 }
 
@@ -45,6 +47,7 @@ location.href="index.html";
 
 
 
+
 let friendId =
 
 localStorage.getItem("chatFriendId");
@@ -71,53 +74,8 @@ location.href="users.html";
 
 
 
-const friendTitle =
 
-document.getElementById("friendName");
-
-
-
-if(friendTitle){
-
-friendTitle.innerHTML = friendName || "Chat";
-
-}
-
-
-
-
-
-
-// Create same chat ID for both users
-
-
-let ids = [
-
-currentUser.uid,
-
-friendId
-
-];
-
-
-
-ids.sort();
-
-
-
-let chatId = ids.join("_");
-
-
-
-
-
-console.log("Chat ID:",chatId);
-
-
-
-
-
-
+// Elements
 
 
 const messagesBox =
@@ -138,16 +96,169 @@ document.getElementById("send");
 
 
 
+const friendTitle =
+
+document.getElementById("friendName");
+
+
+
+const friendImage =
+
+document.getElementById("friendImage");
 
 
 
 
 
 
-// Load messages
+
+if(friendTitle){
+
+friendTitle.textContent = friendName;
+
+}
 
 
-const messageQuery = query(
+
+
+
+
+
+// Chat ID
+
+
+let ids = [
+
+currentUser.uid,
+
+friendId
+
+];
+
+
+ids.sort();
+
+
+let chatId = ids.join("_");
+
+
+
+
+
+
+
+
+
+// Load friend image
+
+
+if(friendImage){
+
+
+
+let userDoc = await getDoc(
+
+doc(
+
+db,
+
+"users",
+
+friendId
+
+)
+
+);
+
+
+
+if(userDoc.exists()){
+
+
+friendImage.src =
+
+userDoc.data().profileImage ||
+
+"images/default.png";
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+// Profile image viewer
+
+
+const imageViewer =
+
+document.getElementById("imageViewer");
+
+
+
+const fullImage =
+
+document.getElementById("fullImage");
+
+
+
+
+if(friendImage && imageViewer){
+
+
+
+friendImage.onclick=()=>{
+
+
+fullImage.src = friendImage.src;
+
+
+imageViewer.style.display="flex";
+
+
+};
+
+
+}
+
+
+
+
+
+if(imageViewer){
+
+
+imageViewer.onclick=()=>{
+
+
+imageViewer.style.display="none";
+
+
+};
+
+
+}
+
+
+
+
+
+
+
+
+
+// Display messages
+
+
+const messagesQuery = query(
 
 collection(
 
@@ -177,7 +288,11 @@ orderBy(
 
 
 
-onSnapshot(messageQuery,(snapshot)=>{
+onSnapshot(
+
+messagesQuery,
+
+(snapshot)=>{
 
 
 messagesBox.innerHTML="";
@@ -208,6 +323,7 @@ return;
 snapshot.forEach((item)=>{
 
 
+
 let msg=item.data();
 
 
@@ -232,10 +348,13 @@ msg.senderId === currentUser.uid
 
 
 
+
 messagesBox.innerHTML += `
 
 
+
 <div class="message ${type}">
+
 
 
 <p>
@@ -243,6 +362,7 @@ messagesBox.innerHTML += `
 ${msg.text}
 
 </p>
+
 
 
 <small>
@@ -253,7 +373,37 @@ ${msg.sender}
 
 
 
+${
+
+msg.senderId === currentUser.uid
+
+?
+
+`
+
+<button
+
+class="message-menu"
+
+data-id="${item.id}"
+
+>
+
+⋮
+
+</button>
+
+`
+
+:
+
+""
+
+}
+
+
 </div>
+
 
 
 `;
@@ -267,13 +417,17 @@ ${msg.sender}
 
 
 
+
 messagesBox.scrollTop =
 
 messagesBox.scrollHeight;
 
 
 
-});
+}
+
+
+);
 
 
 
@@ -305,7 +459,6 @@ if(text===""){
 return;
 
 }
-
 
 
 
@@ -356,8 +509,6 @@ serverTimestamp()
 
 
 
-
-// create/update conversation
 
 
 await setDoc(
@@ -427,10 +578,6 @@ merge:true
 
 
 
-
-// CLEAR INPUT
-
-
 messageInput.value="";
 
 
@@ -447,13 +594,12 @@ messageInput.focus();
 
 
 
-// Send button
-
-
 if(sendButton){
 
 
-sendButton.onclick = sendMessage;
+sendButton.onclick=
+
+sendMessage;
 
 
 }
@@ -462,9 +608,6 @@ sendButton.onclick = sendMessage;
 
 
 
-
-
-// Enter key send
 
 
 if(messageInput){
@@ -492,5 +635,134 @@ sendMessage();
 );
 
 
+}
+
+
+
+
+
+
+
+
+
+// Delete message
+
+
+document.addEventListener(
+
+"click",
+
+async(e)=>{
+
+
+
+if(
+
+e.target.classList.contains(
+
+"delete-message"
+
+)
+
+){
+
+
+
+let id =
+
+e.target.dataset.id;
+
+
+
+
+
+await deleteDoc(
+
+doc(
+
+db,
+
+"chats",
+
+chatId,
+
+"messages",
+
+id
+
+)
+
+);
+
+
 
 }
+
+
+
+}
+
+);
+
+
+let selectedMessage = null;
+
+
+document.addEventListener(
+
+"click",
+
+async(e)=>{
+
+
+
+if(e.target.classList.contains("message-menu")){
+
+
+selectedMessage = e.target.dataset.id;
+
+
+
+let confirmDelete = confirm(
+
+"Delete this message?"
+
+);
+
+
+
+if(confirmDelete){
+
+
+
+await deleteDoc(
+
+doc(
+
+db,
+
+"chats",
+
+chatId,
+
+"messages",
+
+selectedMessage
+
+)
+
+);
+
+
+
+}
+
+
+
+}
+
+
+
+}
+
+);

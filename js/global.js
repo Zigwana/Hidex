@@ -1,3 +1,4 @@
+
 // Hidex Global Chat
 
 
@@ -11,7 +12,9 @@ addDoc,
 query,
 orderBy,
 onSnapshot,
-serverTimestamp
+serverTimestamp,
+doc,
+deleteDoc
 
 }
 
@@ -23,9 +26,7 @@ from
 
 
 
-let currentUser =
-
-JSON.parse(
+let currentUser = JSON.parse(
 
 localStorage.getItem("hidexUser")
 
@@ -45,19 +46,17 @@ location.href="index.html";
 
 
 
+
+
 const messagesBox =
 
 document.getElementById("messages");
 
 
 
-
-
 const messageInput =
 
 document.getElementById("message");
-
-
 
 
 
@@ -70,8 +69,6 @@ document.getElementById("send");
 
 
 
-
-// Global chat collection
 
 
 const globalMessages = collection(
@@ -88,7 +85,9 @@ db,
 
 
 
-// Load messages
+
+
+// Load global messages
 
 
 const chatQuery = query(
@@ -141,6 +140,7 @@ return;
 snapshot.forEach((item)=>{
 
 
+
 let msg = item.data();
 
 
@@ -164,10 +164,13 @@ msg.senderId === currentUser.uid
 
 
 
+
 messagesBox.innerHTML += `
 
 
+
 <div class="message ${type}">
+
 
 
 <p>
@@ -188,18 +191,60 @@ ${msg.text}
 
 <small>
 
-${msg.time ? msg.time.toDate().toLocaleTimeString([],{
+${msg.time ? 
+
+msg.time.toDate().toLocaleTimeString([],{
 
 hour:"2-digit",
 
 minute:"2-digit"
 
-}) : ""}
+})
+
+:
+
+""
+
+}
 
 </small>
 
 
+
+
+
+${
+
+msg.senderId === currentUser.uid
+
+?
+
+`
+
+<button
+
+class="delete-global-message"
+
+data-id="${item.id}"
+
+>
+
+Delete
+
+</button>
+
+`
+
+:
+
+""
+
+}
+
+
+
 </div>
+
 
 
 `;
@@ -212,6 +257,8 @@ minute:"2-digit"
 
 
 
+
+
 messagesBox.scrollTop =
 
 messagesBox.scrollHeight;
@@ -219,6 +266,8 @@ messagesBox.scrollHeight;
 
 
 });
+
+
 
 
 
@@ -243,11 +292,12 @@ messageInput.value.trim();
 
 
 
-if(text === ""){
+if(text===""){
 
 return;
 
 }
+
 
 
 
@@ -289,7 +339,11 @@ serverTimestamp()
 
 
 
+
 messageInput.value="";
+
+
+messageInput.focus();
 
 
 
@@ -301,11 +355,21 @@ messageInput.value="";
 
 
 
+if(sendButton){
+
 
 sendButton.onclick = sendMessage;
 
 
+}
 
+
+
+
+
+
+
+if(messageInput){
 
 
 
@@ -316,13 +380,79 @@ messageInput.addEventListener(
 (e)=>{
 
 
-if(e.key === "Enter"){
+if(e.key==="Enter"){
 
 
 sendMessage();
 
 
 }
+
+
+}
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+// Delete global message
+
+
+document.addEventListener(
+
+"click",
+
+async(e)=>{
+
+
+
+if(
+
+e.target.classList.contains(
+
+"delete-global-message"
+
+)
+
+){
+
+
+
+let messageId =
+
+e.target.dataset.id;
+
+
+
+
+
+await deleteDoc(
+
+doc(
+
+db,
+
+"globalChat",
+
+messageId
+
+)
+
+);
+
+
+
+}
+
 
 
 }
