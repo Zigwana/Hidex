@@ -1,3 +1,6 @@
+// Hidex Signup
+
+
 import {auth, db} from "./firebase.js";
 
 
@@ -28,9 +31,15 @@ from
 
 
 
+
+
 const signupBtn =
 
 document.getElementById("signupBtn");
+
+
+
+
 
 
 
@@ -38,38 +47,52 @@ signupBtn.onclick = async()=>{
 
 
 
+const usernameInput =
+
+document.getElementById("username");
+
+
+
+const emailInput =
+
+document.getElementById("email");
+
+
+
+const passwordInput =
+
+document.getElementById("password");
+
+
+
+const message =
+
+document.getElementById("message");
+
+
+
+
+
+
+
+
 let username =
 
-document
-.getElementById("username")
-.value
-.trim();
+usernameInput.value.trim();
 
 
 
 let email =
 
-document
-.getElementById("email")
-.value
-.trim();
+emailInput.value.trim();
 
 
 
 let password =
 
-document
-.getElementById("password")
-.value;
+passwordInput.value;
 
 
-
-
-
-let message =
-
-document
-.getElementById("message");
 
 
 
@@ -87,14 +110,39 @@ password === ""
 ){
 
 
+
 message.innerHTML =
+
 "Fill all fields";
+
 
 
 return;
 
 
 }
+
+
+
+
+
+
+
+// Loading state
+
+
+signupBtn.disabled = true;
+
+
+signupBtn.innerHTML =
+
+"Creating account...";
+
+
+message.innerHTML="";
+
+
+
 
 
 
@@ -125,9 +173,11 @@ password
 
 
 
+
 let uid =
 
 result.user.uid;
+
 
 
 
@@ -150,6 +200,7 @@ Math.floor(
 Math.random()*900000
 
 );
+
 
 
 
@@ -197,10 +248,11 @@ lastSeen:new Date()
 
 
 
-
 }
 
 );
+
+
 
 
 
@@ -242,6 +294,10 @@ location.href="home.html";
 
 
 
+
+
+
+
 }
 
 catch(error){
@@ -251,6 +307,39 @@ catch(error){
 message.innerHTML =
 
 error.message;
+
+
+
+
+
+// Clear entered data
+
+
+usernameInput.value="";
+
+emailInput.value="";
+
+passwordInput.value="";
+
+
+
+
+
+}
+
+
+
+
+
+
+finally{
+
+
+
+signupBtn.disabled=false;
+
+
+signupBtn.innerHTML="Sign Up";
 
 
 

@@ -1,3 +1,6 @@
+// Hidex Login
+
+
 import {auth, db} from "./firebase.js";
 
 
@@ -29,9 +32,13 @@ from
 
 
 
+
+
 const loginBtn =
 
 document.getElementById("loginBtn");
+
+
 
 
 
@@ -41,29 +48,36 @@ loginBtn.onclick = async()=>{
 
 
 
+const emailInput =
+
+document.getElementById("email");
+
+
+
+const passwordInput =
+
+document.getElementById("password");
+
+
+
+const message =
+
+document.getElementById("message");
+
+
+
+
+
 let email =
 
-document
-.getElementById("email")
-.value
-.trim();
-
+emailInput.value.trim();
 
 
 
 let password =
 
-document
-.getElementById("password")
-.value;
+passwordInput.value;
 
-
-
-
-let message =
-
-document
-.getElementById("message");
 
 
 
@@ -74,6 +88,7 @@ if(email==="" || password===""){
 
 
 message.innerHTML =
+
 "Enter email and password";
 
 
@@ -87,11 +102,32 @@ return;
 
 
 
+// Loading state
+
+
+loginBtn.disabled = true;
+
+
+loginBtn.innerHTML =
+
+"Logging in...";
+
+
+message.innerHTML = "";
+
+
+
+
+
+
+
+
+
 try{
 
 
 
-// Login Firebase
+// Firebase login
 
 
 let result =
@@ -105,6 +141,8 @@ email,
 password
 
 );
+
+
 
 
 
@@ -145,11 +183,19 @@ uid
 
 
 
+
 if(!userDoc.exists()){
 
 
+
 message.innerHTML =
-"Profile not found";
+
+"Account profile not found";
+
+
+emailInput.value="";
+
+passwordInput.value="";
 
 
 return;
@@ -163,9 +209,7 @@ return;
 
 
 
-let user =
-
-userDoc.data();
+let user = userDoc.data();
 
 
 
@@ -211,7 +255,8 @@ serverTimestamp()
 
 
 
-// Save session
+
+// Save user session
 
 
 localStorage.setItem(
@@ -245,17 +290,48 @@ location.href="home.html";
 
 
 
+
+
+
+
 }
-
-
 
 catch(error){
 
 
 
+
+
 message.innerHTML =
 
-"Wrong email or password";
+"Account not found or wrong password";
+
+
+
+
+
+emailInput.value="";
+
+passwordInput.value="";
+
+
+
+
+
+}
+
+
+
+
+
+finally{
+
+
+
+loginBtn.disabled=false;
+
+
+loginBtn.innerHTML="Login";
 
 
 
