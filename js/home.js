@@ -24,7 +24,8 @@ query,
 where,
 onSnapshot,
 updateDoc,
-serverTimestamp
+serverTimestamp,
+getDocs
 
 }
 
@@ -56,6 +57,7 @@ location.href="index.html";
 
 
 
+
 // Elements
 
 
@@ -71,6 +73,12 @@ document.getElementById("notifications");
 
 
 
+const groupsBox =
+
+document.getElementById("groups");
+
+
+
 const logoutBtn =
 
 document.getElementById("logout");
@@ -81,11 +89,11 @@ document.getElementById("logout");
 
 
 
-// Show profile only if it exists
+
+// Show profile
 
 
 if(profile){
-
 
 
 profile.innerHTML = `
@@ -181,6 +189,202 @@ error
 
 
 }
+
+
+
+
+
+
+
+
+
+
+// Load Hidex Groups
+
+
+async function loadGroups(){
+
+
+if(!groupsBox){
+
+return;
+
+}
+
+
+
+groupsBox.innerHTML="";
+
+
+
+try{
+
+
+
+const snap =
+
+await getDocs(
+
+collection(
+
+db,
+
+"groups"
+
+)
+
+);
+
+
+
+
+
+if(snap.empty){
+
+
+groupsBox.innerHTML =
+
+"No groups available";
+
+
+return;
+
+
+}
+
+
+
+
+
+
+
+snap.forEach((item)=>{
+
+
+
+let group =
+item.data();
+
+
+
+
+
+groupsBox.innerHTML += `
+
+
+
+<div class="user-card">
+
+
+
+<img
+
+src="${group.image || 'images/default.png'}"
+
+class="user-image"
+
+onerror="this.src='images/default.png'"
+
+>
+
+
+
+<h3>
+
+${group.name}
+
+</h3>
+
+
+
+<p>
+
+${group.description || ""}
+
+</p>
+
+
+
+<p>
+
+Members:
+${group.members?.length || 0}
+
+</p>
+
+
+
+<button onclick="openGroup('${item.id}')">
+
+Open Group
+
+</button>
+
+
+
+</div>
+
+
+
+`;
+
+
+
+});
+
+
+
+}
+
+catch(error){
+
+
+
+console.log(
+"Groups loading error:",
+error
+);
+
+
+
+groupsBox.innerHTML =
+"Failed to load groups";
+
+
+}
+
+
+
+}
+
+
+
+
+
+window.openGroup=function(id){
+
+
+
+localStorage.setItem(
+
+"selectedGroup",
+
+id
+
+);
+
+
+
+location.href="group-view.html";
+
+
+};
+
+
+
+
+
+loadGroups();
 
 
 
