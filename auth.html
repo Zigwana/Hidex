@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hidex - Authentication</title>
+
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/auth.css">
+
+</head>
+<body>
+
+<div class="auth-container">
+
+<h1 class="auth-logo">Hidex</h1>
+
+<h2 id="formTitle">Login</h2>
+
+<div class="input-group" id="usernameGroup" style="display:none;">
+<input
+id="username"
+type="text"
+placeholder="Username">
+</div>
+
+<div class="input-group">
+<input
+id="email"
+type="email"
+placeholder="Email">
+</div>
+
+<div class="input-group">
+<input
+id="password"
+type="password"
+placeholder="Password">
+</div>
+
+<button
+id="loginBtn"
+class="auth-btn">
+Login
+</button>
+
+<button
+id="signupBtn"
+class="auth-btn"
+style="display:none;">
+Create Account
+</button>
+
+<p
+id="message"
+class="error-msg">
+</p>
+
+<div class="auth-switch">
+
+<a
+href="#"
+id="toggleMode">
+Create new account
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+const title=document.getElementById("formTitle");
+
+const usernameGroup=document.getElementById("usernameGroup");
+
+const loginBtn=document.getElementById("loginBtn");
+
+const signupBtn=document.getElementById("signupBtn");
+
+const toggle=document.getElementById("toggleMode");
+
+const message=document.getElementById("message");
+
+let signupMode=false;
+
+function loadModule(file){
+
+document
+.querySelectorAll("script[data-auth]")
+.forEach(s=>s.remove());
+
+const script=document.createElement("script");
+
+script.type="module";
+
+script.src=file+"?t="+Date.now();
+
+script.dataset.auth="true";
+
+document.body.appendChild(script);
+
+}
+
+loadModule("js/login.js");
+
+toggle.onclick=function(e){
+
+e.preventDefault();
+
+signupMode=!signupMode;
+
+message.innerHTML="";
+
+document.getElementById("email").value="";
+
+document.getElementById("password").value="";
+
+document.getElementById("username").value="";
+
+if(signupMode){
+
+title.textContent="Create Account";
+
+usernameGroup.style.display="block";
+
+loginBtn.style.display="none";
+
+signupBtn.style.display="block";
+
+toggle.textContent="Already have an account?";
+
+loadModule("js/signup.js");
+
+}else{
+
+title.textContent="Login";
+
+usernameGroup.style.display="none";
+
+loginBtn.style.display="block";
+
+signupBtn.style.display="none";
+
+toggle.textContent="Create new account";
+
+loadModule("js/login.js");
+
+}
+
+};
+
+</script>
+
+</body>
+</html>

@@ -1,132 +1,103 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Hidex Chat</title>
+    <title>Hidex Chat</title>
 
-<link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chat.css">
 
 </head>
 
+<body class="chat-page">
 
-<body>
+<div class="chat-room">
 
+    <!-- Header -->
+    <header class="chat-header">
 
-<div class="box chat-box">
+        <button
+            class="back-btn"
+            onclick="location.href='home.html'"
+            aria-label="Back">
+            ←
+        </button>
 
+        <div class="chat-user">
 
-<div id="chatHeader">
+            <img
+                id="friendImage"
+                class="chat-avatar"
+                src="images/default.png"
+                alt="Friend Profile">
 
+            <div class="chat-user-info">
 
-<img
+                <h3 id="friendName">
+                    Loading...
+                </h3>
 
-id="friendImage"
+            </div>
 
-src="images/default.png"
+        </div>
 
-class="user-image"
+    </header>
 
+    <!-- Chat Area -->
+    <main class="chat-main">
 
->
+        <div id="messages">
 
+            <div class="chat-loading">
 
-<div>
+                <div class="loader"></div>
 
-<h2 id="friendName">
-Chat
-</h2>
+            </div>
 
+        </div>
 
-<p id="friendStatus">
-Offline
-</p>
+    </main>
 
-</div>
+    <!-- Message Input -->
+    <footer class="chat-input-area">
 
+        <input
+            id="message"
+            type="text"
+            placeholder="Type message..."
+            autocomplete="off">
 
-</div>
+        <button
+            id="send"
+            class="send-btn">
+            Send
+        </button>
 
-
-
-
-
-<div id="messages">
-
-</div>
-
-
-
-
-
-<div class="chat-input">
-
-
-<input
-
-id="message"
-
-placeholder="Type message..."
-
->
-
-
-<button id="send">
-
-Send
-
-</button>
-
+    </footer>
 
 </div>
 
+<!-- Image Viewer -->
 
+<div id="imageViewer" class="image-viewer">
 
-
-<br>
-
-
-<button onclick="location.href='chats.html'">
-
-Back to Chats
-
-</button>
-
-
-
-<br><br>
-
-
-
-<button onclick="location.href='home.html'">
-
-Home
-
-</button>
-
-
-
-</div>
-<div id="imageViewer">
-
-    <div id="imageOverlay"></div>
-
-    <img id="fullImage">
+    <img
+        id="fullImage"
+        class="image-viewer-img"
+        src=""
+        alt="Full Image">
 
 </div>
 
-  <script type="module" src="js/firebase.js"></script>
+<!-- Scripts -->
+<script type="module" src="js/auth-guard.js"></script>
 
-<script type="module" src="js/presence.js"></script>
-
-<script type="module" src="js/home.js"></script>
 <script type="module" src="js/auth-check.js"></script>
-
 <script type="module" src="js/chat.js"></script>
 
-
 </body>
-
 </html>

@@ -1,250 +1,381 @@
-// Hidex Global Chat
+// =====================================================
+// Hidex Global.js
+// Part 1/4
+// Authentication & Initialization
+// =====================================================
 
-
-import {db} from "./firebase.js";
-
+import { auth, db } from "./firebase.js";
 
 import {
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-collection,
-addDoc,
-query,
-orderBy,
-onSnapshot,
-serverTimestamp,
-doc,
-deleteDoc
-
-}
-
-from
-
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
+import {
+    collection,
+    query,
+    orderBy,
+    onSnapshot,
+    addDoc,
+    serverTimestamp,
+    doc,
+    deleteDoc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
+// =====================================================
+// Globals
+// =====================================================
+
+let currentUser = null;
+
+let unsubscribeMessages = null;
+
+let initialized = false;
 
 
-let currentUser = JSON.parse(
-
-localStorage.getItem("hidexUser")
-
-);
-
-
-
-
-
-if(!currentUser){
-
-location.href="index.html";
-
-}
-
-
-
-
-
-
+// =====================================================
+// Elements
+// =====================================================
 
 const messagesBox =
-
 document.getElementById("messages");
 
-if(messagesBox){
-
-messagesBox.innerHTML =
-
-"<p>Loading global chat...</p>";
-
-}
-
 const messageInput =
-
 document.getElementById("message");
 
-
-
 const sendButton =
-
 document.getElementById("send");
 
 
+// =====================================================
+// Check Required Elements
+// =====================================================
 
+if(
+    !messagesBox ||
+    !messageInput ||
+    !sendButton
+){
 
-
-
-
-if(!messagesBox || !messageInput || !sendButton){
-
-console.log("Global chat elements missing");
+    console.error(
+        "Global chat elements missing."
+    );
 
 }
 
 
+// =====================================================
+// Wait For Authentication
+// =====================================================
 
+onAuthStateChanged(
 
+    auth,
 
+    async(firebaseUser)=>{
 
+        if(!firebaseUser){
 
+            localStorage.removeItem(
+                "hidexUser"
+            );
 
-const globalMessages = collection(
+            location.href="index.html";
 
-db,
+            return;
 
-"globalChat"
+        }
+
+        if(initialized){
+
+            return;
+
+        }
+
+        try{
+
+            const userSnap = await getDoc(
+
+                doc(
+                    db,
+                    "users",
+                    firebaseUser.uid
+                )
+
+            );
+
+            if(!userSnap.exists()){
+
+                location.href="index.html";
+
+                return;
+
+            }
+
+            currentUser = {
+
+                uid:firebaseUser.uid,
+
+                ...userSnap.data()
+
+            };
+
+            localStorage.setItem(
+
+                "hidexUser",
+
+                JSON.stringify(currentUser)
+
+            );
+
+            initialized = true;
+
+            initializeGlobalChat();
+
+        }
+
+        catch(error){
+
+            console.error(
+
+                "Authentication failed:",
+
+                error
+
+            );
+
+            alert(
+
+                "Unable to load Global Chat."
+
+            );
+
+        }
+
+    }
 
 );
 
 
+// =====================================================
+// Initialize
+// =====================================================
 
+function initializeGlobalChat(){
 
+    messagesBox.innerHTML = `
 
+        <p>
 
+            Loading global chat...
 
+        </p>
 
+    `;
 
-// Load global messages
+    registerEvents();
 
+    loadMessages();
 
-const chatQuery = query(
+    console.log(
 
-globalMessages,
+        "Global Chat Ready"
 
-orderBy(
-
-"time",
-
-"asc"
-
-)
-
-);
-
-
-
-
-
-
-
-onSnapshot(chatQuery,(snapshot)=>{
-
-
-messagesBox.innerHTML="";
-
-
-
-
-
-if(snapshot.empty){
-
-
-messagesBox.innerHTML =
-
-"<p>No messages yet. Start the conversation.</p>";
-
-return;
-
+    );
 
 }
 
 
+// =====================================================
+// Register Events
+// =====================================================
 
+function registerEvents(){
 
+    sendButton.onclick = ()=>{
 
+        sendMessage();
 
+    };
 
-snapshot.forEach((item)=>{
+    messageInput.addEventListener(
 
+        "keydown",
 
+        (event)=>{
 
-let msg = item.data();
+            if(event.key==="Enter"){
 
+                event.preventDefault();
 
+                sendMessage();
 
+            }
 
+        }
 
-let type =
-
-msg.senderId === currentUser.uid
-
-?
-
-"sent"
-
-:
-
-"received";
-
-
-
-
-
-
-
-messagesBox.innerHTML += `
-
-
-
-<div class="message ${type}">
-
-
-
-<p>
-
-<b>
-
-${msg.sender}
-
-</b>
-
-<br>
-
-${msg.text}
-
-</p>
-
-
-
-<small>
-
-${msg.time ? 
-
-msg.time.toDate().toLocaleTimeString([],{
-
-hour:"2-digit",
-
-minute:"2-digit"
-
-})
-
-:
-
-""
+    );
 
 }
 
-</small>
+console.log("Global Part 1 Ready");
+
+// =====================================================
+// Hidex Global.js
+// Part 2/4
+// Real-time Messages
+// =====================================================
 
 
+// =====================================================
+// Load Messages
+// =====================================================
 
+function loadMessages(){
 
+    if(unsubscribeMessages){
 
+        unsubscribeMessages();
 
+        unsubscribeMessages = null;
 
-${
+    }
 
-msg.senderId === currentUser.uid
+    const chatQuery = query(
 
-?
+        collection(
+            db,
+            "globalChat"
+        ),
 
-`
+        orderBy(
+            "time",
+            "asc"
+        )
+
+    );
+
+    unsubscribeMessages = onSnapshot(
+
+        chatQuery,
+
+        (snapshot)=>{
+
+            if(snapshot.empty){
+
+                messagesBox.innerHTML = `
+
+                    <p>
+
+                        No messages yet.
+
+                        Start the conversation.
+
+                    </p>
+
+                `;
+
+                return;
+
+            }
+
+            const shouldScroll =
+
+                messagesBox.scrollHeight
+                -
+                messagesBox.scrollTop
+                -
+                messagesBox.clientHeight
+
+                <
+
+                120;
+
+            let html = "";
+
+            snapshot.forEach((messageDoc)=>{
+
+                const msg = messageDoc.data();
+
+                const mine =
+
+                    msg.senderId ===
+                    currentUser.uid;
+
+                let time = "";
+
+                if(msg.time){
+
+                    try{
+
+                        time =
+
+                        msg.time
+
+                        .toDate()
+
+                        .toLocaleTimeString([],{
+
+                            hour:"2-digit",
+
+                            minute:"2-digit"
+
+                        });
+
+                    }
+
+                    catch{
+
+                        time = "";
+
+                    }
+
+                }
+
+                html += `
+
+<div class="message ${mine ? "sent" : "received"}">
+
+    <div class="message-text">
+
+        ${escapeHtml(msg.text || "")}
+
+    </div>
+
+    <div class="message-footer">
+
+        <small>
+
+            ${escapeHtml(
+
+                msg.sender ||
+
+                "Unknown User"
+
+            )}
+
+        </small>
+
+        <span class="message-time">
+
+            ${time}
+
+        </span>
+
+        ${
+
+            mine
+
+            ?
+
+            `
 
 <button
 
 class="delete-global-message"
 
-data-id="${item.id}"
+data-id="${messageDoc.id}"
 
 >
 
@@ -254,268 +385,448 @@ Delete
 
 `
 
-:
+            :
 
-""
+            ""
 
-}
+        }
 
-
+    </div>
 
 </div>
 
+`;
 
+            });
+
+            messagesBox.innerHTML = html;
+
+            if(shouldScroll){
+
+                messagesBox.scrollTop =
+
+                messagesBox.scrollHeight;
+
+            }
+
+            attachDeleteButtons();
+
+        },
+
+        (error)=>{
+
+            console.error(
+
+                "Global Chat:",
+
+                error
+
+            );
+
+            messagesBox.innerHTML = `
+
+<p>
+
+Unable to load messages.
+
+</p>
 
 `;
 
+        }
+
+    );
+
+}
 
 
-});
+// =====================================================
+// Delete Buttons
+// =====================================================
+
+function attachDeleteButtons(){
+
+    document
+
+    .querySelectorAll(
+
+        ".delete-global-message"
+
+    )
+
+    .forEach((button)=>{
+
+        button.onclick = ()=>{
+
+            deleteMessage(
+
+                button.dataset.id
+
+            );
+
+        };
+
+    });
+
+}
 
 
+// =====================================================
+// Scroll Helper
+// =====================================================
+
+function scrollToBottom(){
+
+    messagesBox.scrollTop =
+
+    messagesBox.scrollHeight;
+
+}
+
+console.log("Global Part 2 Ready");
+
+// =====================================================
+// Hidex Global.js
+// Part 3/4
+// Send & Delete Messages
+// =====================================================
 
 
-
-
-
-messagesBox.scrollTop =
-
-messagesBox.scrollHeight;
-
-
-
-});
-
-
-
-
-
-
-
-
-
-
-
-// Send global message
-
+// =====================================================
+// Send Message
+// =====================================================
 
 async function sendMessage(){
 
+    if(!currentUser){
 
+        return;
 
-let text =
+    }
 
-messageInput.value.trim();
+    const text =
 
+    messageInput.value.trim();
 
+    if(text===""){
 
+        return;
 
+    }
 
-if(text===""){
+    if(text.length>1000){
 
-return;
+        alert(
+
+            "Messages cannot exceed 1000 characters."
+
+        );
+
+        return;
+
+    }
+
+    sendButton.disabled = true;
+
+    sendButton.textContent = "...";
+
+    try{
+
+        await addDoc(
+
+            collection(
+
+                db,
+
+                "globalChat"
+
+            ),
+
+            {
+
+                senderId:
+
+                currentUser.uid,
+
+                sender:
+
+                currentUser.username ||
+
+                "Unknown User",
+
+                text:text,
+
+                time:
+
+                serverTimestamp()
+
+            }
+
+        );
+
+        messageInput.value="";
+
+        messageInput.focus();
+
+    }
+
+    catch(error){
+
+        console.error(
+
+            "Send Error:",
+
+            error
+
+        );
+
+        alert(
+
+            "Unable to send message.\n\n"
+
+            +
+
+            error.message
+
+        );
+
+    }
+
+    finally{
+
+        sendButton.disabled = false;
+
+        sendButton.textContent = "➤";
+
+    }
 
 }
 
 
+// =====================================================
+// Delete Message
+// =====================================================
 
+async function deleteMessage(messageId){
 
+    if(!messageId){
 
+        return;
 
+    }
 
-await addDoc(
+    const answer = confirm(
 
-globalMessages,
+        "Delete this message?"
 
-{
+    );
 
+    if(!answer){
 
-sender:
+        return;
 
-currentUser.username,
+    }
 
+    try{
 
-senderId:
+        await deleteDoc(
 
-currentUser.uid,
+            doc(
 
+                db,
 
-text:text,
+                "globalChat",
 
+                messageId
 
-time:
+            )
 
-serverTimestamp()
+        );
 
+    }
 
+    catch(error){
+
+        console.error(
+
+            "Delete Error:",
+
+            error
+
+        );
+
+        alert(
+
+            "Unable to delete message.\n\n"
+
+            +
+
+            error.message
+
+        );
+
+    }
 
 }
+
+
+// =====================================================
+// Manual Refresh
+// =====================================================
+
+window.refreshGlobalChat = ()=>{
+
+    loadMessages();
+
+};
+
+
+// =====================================================
+// Session Checker
+// =====================================================
+
+window.checkGlobalSession = ()=>{
+
+    if(!auth.currentUser){
+
+        location.href="index.html";
+
+        return false;
+
+    }
+
+    return true;
+
+};
+
+console.log("Global Part 3 Ready");
+
+// =====================================================
+// Hidex Global.js
+// Part 4/4
+// Helpers, Cleanup & Ready
+// =====================================================
+
+
+// =====================================================
+// Escape HTML
+// =====================================================
+
+function escapeHtml(text){
+
+    return String(text)
+
+        .replace(/&/g,"&amp;")
+
+        .replace(/</g,"&lt;")
+
+        .replace(/>/g,"&gt;")
+
+        .replace(/"/g,"&quot;")
+
+        .replace(/'/g,"&#039;");
+
+}
+
+
+// =====================================================
+// Default Image
+// =====================================================
+
+window.defaultImage = (img)=>{
+
+    img.src = "images/default.png";
+
+};
+
+
+// =====================================================
+// Cleanup
+// =====================================================
+
+function cleanup(){
+
+    if(unsubscribeMessages){
+
+        unsubscribeMessages();
+
+        unsubscribeMessages = null;
+
+    }
+
+}
+
+
+// =====================================================
+// Page Events
+// =====================================================
+
+window.addEventListener(
+
+    "pagehide",
+
+    cleanup
 
 );
 
 
+window.addEventListener(
 
+    "beforeunload",
 
-
-
-
-messageInput.value="";
-
-
-messageInput.focus();
-
-
-
-}
-
-
-
-
-
-
-
-
-if(sendButton){
-
-
-sendButton.onclick = sendMessage;
-
-
-}
-
-
-
-
-
-
-
-if(messageInput){
-
-
-
-messageInput.addEventListener(
-
-"keydown",
-
-(e)=>{
-
-
-if(e.key==="Enter"){
-
-
-sendMessage();
-
-
-}
-
-
-}
+    cleanup
 
 );
 
 
-}
-
-
-
-
-
-
-
-
-
-// Confirm delete
-
-
-async function confirmDelete(messagePath){
-
-
-
-let answer = confirm(
-
-"Delete this message?"
-
-);
-
-
-
-
-
-if(!answer){
-
-return;
-
-}
-
-
-
-
-
-await deleteDoc(messagePath);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// Delete global message
-
+// =====================================================
+// Visibility
+// =====================================================
 
 document.addEventListener(
 
-"click",
+    "visibilitychange",
 
-async(e)=>{
+    ()=>{
 
+        if(
 
+            !document.hidden &&
 
-if(
+            currentUser
 
-e.target.classList.contains(
+        ){
 
-"delete-global-message"
+            loadMessages();
 
-)
+        }
 
-){
-
-
-
-let messageId =
-
-e.target.dataset.id;
-
-
-
-
-
-await confirmDelete(
-
-doc(
-
-db,
-
-"globalChat",
-
-messageId
-
-)
+    }
 
 );
 
 
+// =====================================================
+// Back Button
+// =====================================================
 
-}
+window.goBack = ()=>{
+
+    cleanup();
+
+    history.back();
+
+};
 
 
+// =====================================================
+// Ready
+// =====================================================
 
-}
+console.log("================================");
 
-);
+console.log("Hidex Global Chat Ready");
+
+console.log("Current User:", currentUser);
+
+console.log("================================");

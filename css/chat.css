@@ -1,0 +1,2272 @@
+/* ==================================================
+   HIDEX CHAT CSS
+   PART 1/6
+   Clean Layout & Header
+================================================== */
+
+/* RESET */
+
+*,
+*::before,
+*::after{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+:root{
+    --primary:#a31621;
+    --primary-dark:#82111a;
+    --dark:#111111;
+    --cream:#FBF8F1;
+    --white:#FFFFFF;
+    --border:#E8E1D9;
+    --shadow:0 4px 14px rgba(0,0,0,.08);
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    margin:0;
+    overflow:hidden;
+    background:var(--cream);
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+/* ==========================
+   PAGE
+========================== */
+
+.chat-room{
+
+    width:100%;
+    max-width:430px;
+
+    height:100dvh;
+
+    margin:0 auto;
+
+    display:flex;
+    flex-direction:column;
+
+    background:var(--cream);
+
+    overflow:hidden;
+
+}
+
+/* ==========================
+   HEADER
+========================== */
+
+.chat-header{
+
+    height:68px;
+
+    flex-shrink:0;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:0 16px;
+
+    background:var(--dark);
+
+    color:var(--white);
+
+    border-bottom:3px solid var(--primary);
+
+    z-index:50;
+
+}
+
+.chat-header button{
+
+    border:none;
+
+    background:none;
+
+    color:white;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+    width:38px;
+
+    height:38px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.chat-header button:hover{
+
+    background:rgba(255,255,255,.08);
+
+    border-radius:50%;
+
+}
+
+/* ==========================
+   USER
+========================== */
+
+.chat-user{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    flex:1;
+
+    min-width:0;
+
+}
+
+#friendImage{
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    flex-shrink:0;
+
+    border:2px solid var(--primary);
+
+    background:white;
+
+}
+
+.chat-user-info{
+
+    min-width:0;
+
+    flex:1;
+
+}
+
+#friendName{
+
+    font-size:17px;
+
+    font-weight:700;
+
+    color:white;
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    text-overflow:ellipsis;
+
+}
+
+.friend-status{
+
+    margin-top:2px;
+
+    font-size:12px;
+
+    color:#d7d7d7;
+
+}
+
+/* ==========================
+   MAIN
+========================== */
+
+.chat-main{
+
+    flex:1;
+
+    min-height:0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+}
+
+/* ==========================
+   MESSAGE AREA
+========================== */
+
+#messages{
+
+    flex:1;
+
+    min-height:0;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    padding:16px 12px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+    scroll-behavior:smooth;
+
+    background:var(--cream);
+
+}
+
+#messages::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+#messages::-webkit-scrollbar-thumb{
+
+    background:var(--primary);
+
+    border-radius:20px;
+
+}
+
+#messages::-webkit-scrollbar-track{
+
+    background:#f0f0f0;
+
+}
+
+
+/* ==================================================
+   HIDEX CHAT CSS
+   PART 2/6
+   Message Components
+================================================== */
+
+
+/* ==========================
+   MESSAGE ROW
+========================== */
+
+.message{
+
+    display:flex;
+
+    flex-direction:column;
+
+    width:fit-content;
+
+    max-width:82%;
+
+    min-width:0;
+
+    animation:messageFade .25s ease;
+
+}
+
+.message.sent{
+
+    align-self:flex-end;
+
+}
+
+.message.received{
+
+    align-self:flex-start;
+
+}
+
+@keyframes messageFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(8px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/* ==========================
+   MESSAGE BUBBLE
+========================== */
+
+.message-text{
+
+    display:inline-block;
+
+    max-width:100%;
+
+    padding:12px 15px;
+
+    border-radius:18px;
+
+    font-size:15px;
+
+    line-height:1.5;
+
+    white-space:pre-wrap;
+
+    overflow-wrap:anywhere;
+
+    word-break:break-word;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+
+}
+
+.message.sent .message-text{
+
+    background:var(--primary);
+
+    color:white;
+
+    border-bottom-right-radius:6px;
+
+}
+
+.message.received .message-text{
+
+    background:white;
+
+    color:#111111;
+
+    border:1px solid var(--border);
+
+    border-bottom-left-radius:6px;
+
+}
+
+
+/* ==========================
+   SENDER
+========================== */
+
+.sender{
+
+    margin-bottom:5px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    color:var(--primary);
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+    white-space:nowrap;
+
+}
+
+.message.sent .sender{
+
+    text-align:right;
+
+}
+
+
+/* ==========================
+   FOOTER
+========================== */
+
+.message-footer{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-end;
+
+    gap:8px;
+
+    margin-top:6px;
+
+    padding:0 4px;
+
+}
+
+.message.received .message-footer{
+
+    justify-content:flex-start;
+
+}
+
+
+/* ==========================
+   TIME
+========================== */
+
+.message-time{
+
+    font-size:11px;
+
+    color:#777777;
+
+}
+
+
+/* ==========================
+   READ STATUS
+========================== */
+
+.message-status{
+
+    font-size:11px;
+
+    color:#999999;
+
+}
+
+.message.sent .message-status.read{
+
+    color:#2ecc71;
+
+}
+
+
+/* ==========================
+   MESSAGE MENU
+========================== */
+
+.message-menu{
+
+    width:28px;
+
+    height:28px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:transparent;
+
+    cursor:pointer;
+
+    color:#666666;
+
+    transition:.2s;
+
+}
+
+.message-menu:hover{
+
+    background:var(--primary);
+
+    color:white;
+
+}
+
+
+/* ==========================
+   LINKS
+========================== */
+
+.message-text a{
+
+    color:inherit;
+
+    text-decoration:underline;
+
+    word-break:break-all;
+
+}
+
+
+/* ==========================
+   IMAGE MESSAGE
+========================== */
+
+.message-image{
+
+    display:block;
+
+    margin-top:8px;
+
+    max-width:260px;
+
+    width:100%;
+
+    max-height:320px;
+
+    object-fit:cover;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.message-image:hover{
+
+    transform:scale(1.02);
+
+}
+
+
+/* ==========================
+   FILE MESSAGE
+========================== */
+
+.file-message{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-top:8px;
+
+    padding:10px;
+
+    background:#F8F5F0;
+
+    border-radius:12px;
+
+}
+
+.file-icon{
+
+    width:42px;
+
+    height:42px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:10px;
+
+    background:var(--primary);
+
+    color:white;
+
+    font-size:20px;
+
+}
+
+.file-details{
+
+    flex:1;
+
+    min-width:0;
+
+}
+
+.file-name{
+
+    font-size:14px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+.file-size{
+
+    margin-top:2px;
+
+    font-size:12px;
+
+    color:#777777;
+
+}
+
+
+/* ==========================
+   EMPTY CHAT
+========================== */
+
+.empty-chat{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    color:#666666;
+
+    padding:30px;
+
+}
+
+.empty-chat h3{
+
+    margin-bottom:8px;
+
+    color:var(--primary);
+
+}
+
+.empty-chat p{
+
+    max-width:260px;
+
+    line-height:1.5;
+
+}
+
+/* ==================================================
+   HIDEX CHAT CSS
+   PART 3/6
+   Input Area & Controls
+================================================== */
+
+
+/* ==========================
+   CHAT INPUT BAR
+========================== */
+
+.chat-input-area{
+
+    flex-shrink:0;
+
+    display:flex;
+
+    align-items:flex-end;
+
+    gap:10px;
+
+    padding:12px;
+
+    background:#FFFFFF;
+
+    border-top:1px solid var(--border);
+
+    box-shadow:0 -2px 8px rgba(0,0,0,.05);
+
+    z-index:100;
+
+}
+
+
+/* ==========================
+   INPUT CONTAINER
+========================== */
+
+.input-wrapper{
+
+    flex:1;
+
+    display:flex;
+
+    align-items:flex-end;
+
+    background:#FBF8F1;
+
+    border:1px solid var(--border);
+
+    border-radius:26px;
+
+    padding:0 12px;
+
+    transition:.2s;
+
+}
+
+.input-wrapper:focus-within{
+
+    border-color:var(--primary);
+
+    box-shadow:0 0 0 3px rgba(163,22,33,.12);
+
+}
+
+
+/* ==========================
+   MESSAGE INPUT
+========================== */
+
+#message,
+#messageInput{
+
+    flex:1;
+
+    border:none;
+
+    outline:none;
+
+    resize:none;
+
+    background:transparent;
+
+    color:#111111;
+
+    font-size:15px;
+
+    line-height:1.5;
+
+    padding:12px 0;
+
+    min-height:46px;
+
+    max-height:120px;
+
+    overflow-y:auto;
+
+    font-family:inherit;
+
+}
+
+#message::placeholder,
+#messageInput::placeholder{
+
+    color:#999999;
+
+}
+
+
+/* ==========================
+   SEND BUTTON
+========================== */
+
+#send,
+#sendBtn{
+
+    width:48px;
+
+    height:48px;
+
+    flex-shrink:0;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:var(--primary);
+
+    color:#FFFFFF;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:18px;
+
+    transition:.2s;
+
+    box-shadow:0 4px 12px rgba(163,22,33,.25);
+
+}
+
+#send:hover,
+#sendBtn:hover{
+
+    background:var(--primary-dark);
+
+    transform:scale(1.05);
+
+}
+
+#send:active,
+#sendBtn:active{
+
+    transform:scale(.95);
+
+}
+
+#send:disabled,
+#sendBtn:disabled{
+
+    opacity:.5;
+
+    cursor:not-allowed;
+
+}
+
+
+/* ==========================
+   ATTACH BUTTON
+========================== */
+
+.attach-btn{
+
+    width:42px;
+
+    height:42px;
+
+    flex-shrink:0;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#111111;
+
+    color:#FFFFFF;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:18px;
+
+    transition:.2s;
+
+}
+
+.attach-btn:hover{
+
+    background:var(--primary);
+
+}
+
+
+/* ==========================
+   REPLY PREVIEW
+========================== */
+
+.reply-preview{
+
+    display:none;
+
+    margin:10px 12px 0;
+
+    padding:10px 12px;
+
+    border-left:4px solid var(--primary);
+
+    background:#FFFFFF;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    color:#555555;
+
+}
+
+.reply-preview.active{
+
+    display:block;
+
+}
+
+.reply-preview strong{
+
+    display:block;
+
+    margin-bottom:3px;
+
+    color:var(--primary);
+
+}
+
+
+/* ==========================
+   TYPING INDICATOR
+========================== */
+
+.typing-indicator{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:4px;
+
+    margin:8px 14px;
+
+    font-size:13px;
+
+    color:#666666;
+
+}
+
+.typing-dot{
+
+    width:6px;
+
+    height:6px;
+
+    border-radius:50%;
+
+    background:var(--primary);
+
+    animation:typingBounce 1.2s infinite;
+
+}
+
+.typing-dot:nth-child(2){
+
+    animation-delay:.2s;
+
+}
+
+.typing-dot:nth-child(3){
+
+    animation-delay:.4s;
+
+}
+
+@keyframes typingBounce{
+
+    0%,100%{
+
+        transform:translateY(0);
+
+        opacity:.4;
+
+    }
+
+    50%{
+
+        transform:translateY(-3px);
+
+        opacity:1;
+
+    }
+
+}
+
+
+/* ==========================
+   SAFE AREA SUPPORT
+========================== */
+
+@supports (padding:max(0px)){
+
+    .chat-input-area{
+
+        padding-bottom:max(12px,env(safe-area-inset-bottom));
+
+    }
+
+}
+
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media(max-width:600px){
+
+    .chat-input-area{
+
+        padding:10px;
+
+        gap:8px;
+
+    }
+
+    #message,
+    #messageInput{
+
+        font-size:14px;
+
+    }
+
+    #send,
+    #sendBtn{
+
+        width:44px;
+
+        height:44px;
+
+    }
+
+    .attach-btn{
+
+        width:40px;
+
+        height:40px;
+
+    }
+
+}
+
+/* ==================================================
+   HIDEX CHAT CSS
+   PART 4/6
+   Media, Actions & Status
+================================================== */
+
+
+/* ==========================
+   USER AVATAR
+========================== */
+
+.user-avatar{
+
+    width:42px;
+    height:42px;
+
+    border-radius:50%;
+
+    overflow:hidden;
+
+    flex-shrink:0;
+
+    background:#FFFFFF;
+
+    border:2px solid var(--primary);
+
+}
+
+.user-avatar img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+
+/* ==========================
+   ONLINE STATUS
+========================== */
+
+.online-status{
+
+    position:relative;
+
+    display:inline-flex;
+
+}
+
+.online-status::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:10px;
+
+    height:10px;
+
+    right:1px;
+
+    bottom:1px;
+
+    border-radius:50%;
+
+    background:#22c55e;
+
+    border:2px solid #FFFFFF;
+
+    animation:onlinePulse 2s infinite;
+
+}
+
+.offline-status::after{
+
+    background:#9CA3AF;
+
+    animation:none;
+
+}
+
+@keyframes onlinePulse{
+
+    0%{
+
+        box-shadow:0 0 0 0 rgba(34,197,94,.5);
+
+    }
+
+    70%{
+
+        box-shadow:0 0 0 8px rgba(34,197,94,0);
+
+    }
+
+    100%{
+
+        box-shadow:0 0 0 0 rgba(34,197,94,0);
+
+    }
+
+}
+
+
+/* ==========================
+   MESSAGE ACTIONS
+========================== */
+
+.message-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    margin-top:6px;
+
+    opacity:0;
+
+    transition:.2s;
+
+}
+
+.message:hover .message-actions{
+
+    opacity:1;
+
+}
+
+.message-actions button{
+
+    border:none;
+
+    background:transparent;
+
+    color:#666666;
+
+    cursor:pointer;
+
+    width:30px;
+
+    height:30px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    transition:.2s;
+
+}
+
+.message-actions button:hover{
+
+    background:var(--primary);
+
+    color:#FFFFFF;
+
+}
+
+
+/* ==========================
+   REACTIONS
+========================== */
+
+.message-reactions{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:6px;
+
+    margin-top:8px;
+
+}
+
+.reaction{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:4px;
+
+    padding:5px 10px;
+
+    border-radius:20px;
+
+    border:1px solid var(--border);
+
+    background:#FFFFFF;
+
+    cursor:pointer;
+
+    font-size:12px;
+
+    transition:.2s;
+
+}
+
+.reaction:hover{
+
+    background:var(--primary);
+
+    color:#FFFFFF;
+
+    border-color:var(--primary);
+
+}
+
+.reaction-count{
+
+    font-weight:bold;
+
+}
+
+
+/* ==========================
+   IMAGE MESSAGE
+========================== */
+
+.message-image{
+
+    display:block;
+
+    width:100%;
+
+    max-width:280px;
+
+    max-height:340px;
+
+    object-fit:cover;
+
+    border-radius:14px;
+
+    margin-top:8px;
+
+    cursor:pointer;
+
+    transition:transform .2s;
+
+}
+
+.message-image:hover{
+
+    transform:scale(1.02);
+
+}
+
+
+/* ==========================
+   VIDEO
+========================== */
+
+.message-video{
+
+    width:100%;
+
+    max-width:300px;
+
+    border-radius:14px;
+
+    margin-top:8px;
+
+    background:#000000;
+
+}
+
+
+/* ==========================
+   AUDIO
+========================== */
+
+.voice-message{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-top:8px;
+
+}
+
+.voice-play{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:var(--primary);
+
+    color:#FFFFFF;
+
+    cursor:pointer;
+
+}
+
+.voice-progress{
+
+    flex:1;
+
+    height:6px;
+
+    border-radius:6px;
+
+    overflow:hidden;
+
+    background:#E5E7EB;
+
+}
+
+.voice-progress span{
+
+    display:block;
+
+    width:35%;
+
+    height:100%;
+
+    background:var(--primary);
+
+}
+
+
+/* ==========================
+   FILE CARD
+========================== */
+
+.file-message{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-top:8px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:#F8F5F0;
+
+    border:1px solid var(--border);
+
+}
+
+.file-icon{
+
+    width:44px;
+
+    height:44px;
+
+    border-radius:10px;
+
+    background:var(--primary);
+
+    color:#FFFFFF;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:20px;
+
+}
+
+.file-details{
+
+    flex:1;
+
+    min-width:0;
+
+}
+
+.file-name{
+
+    font-size:14px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+.file-size{
+
+    margin-top:3px;
+
+    font-size:12px;
+
+    color:#777777;
+
+}
+
+
+/* ==========================
+   IMAGE VIEWER
+========================== */
+
+#imageViewer{
+
+    position:fixed;
+
+    inset:0;
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:rgba(0,0,0,.92);
+
+    z-index:9999;
+
+}
+
+#imageViewer.active{
+
+    display:flex;
+
+}
+
+#fullImage{
+
+    max-width:92%;
+
+    max-height:92%;
+
+    border-radius:14px;
+
+    object-fit:contain;
+
+}
+
+
+/* ==========================
+   IMAGE CLOSE
+========================== */
+
+.image-close{
+
+    position:absolute;
+
+    top:20px;
+
+    right:20px;
+
+    width:44px;
+
+    height:44px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.15);
+
+    color:#FFFFFF;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+}
+
+.image-close:hover{
+
+    background:rgba(255,255,255,.3);
+
+}
+
+/* ==================================================
+   HIDEX CHAT CSS
+   PART 5/6
+   Loading, Empty States & Responsive
+================================================== */
+
+
+/* ==========================
+   LOADING
+========================== */
+
+.chat-loading{
+
+    flex:1;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:40px;
+
+}
+
+.loader{
+
+    width:42px;
+
+    height:42px;
+
+    border:4px solid rgba(17,17,17,.12);
+
+    border-top-color:var(--primary);
+
+    border-radius:50%;
+
+    animation:loaderSpin .8s linear infinite;
+
+}
+
+@keyframes loaderSpin{
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+
+/* ==========================
+   EMPTY CHAT
+========================== */
+
+.empty-chat{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:30px;
+
+}
+
+.empty-chat-icon{
+
+    width:78px;
+
+    height:78px;
+
+    border-radius:50%;
+
+    background:var(--primary);
+
+    color:#FFFFFF;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:34px;
+
+    margin-bottom:18px;
+
+}
+
+.empty-chat h3{
+
+    color:var(--primary);
+
+    font-size:20px;
+
+    margin-bottom:8px;
+
+}
+
+.empty-chat p{
+
+    max-width:260px;
+
+    color:#666666;
+
+    line-height:1.6;
+
+}
+
+
+/* ==========================
+   DATE DIVIDER
+========================== */
+
+.date-divider{
+
+    display:flex;
+
+    justify-content:center;
+
+    margin:14px 0;
+
+}
+
+.date-divider span{
+
+    padding:6px 14px;
+
+    border-radius:20px;
+
+    background:#EFE9DF;
+
+    color:#666666;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+
+/* ==========================
+   NEW MESSAGE BADGE
+========================== */
+
+.new-message{
+
+    align-self:center;
+
+    padding:6px 14px;
+
+    border-radius:20px;
+
+    background:var(--primary);
+
+    color:#FFFFFF;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    animation:badgePulse 2s infinite;
+
+}
+
+@keyframes badgePulse{
+
+    0%,100%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.05);
+
+    }
+
+}
+
+
+/* ==========================
+   ERROR MESSAGE
+========================== */
+
+.chat-error{
+
+    margin:16px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:#FFF2F2;
+
+    color:var(--primary);
+
+    border:1px solid rgba(163,22,33,.2);
+
+    text-align:center;
+
+}
+
+
+/* ==========================
+   SUCCESS MESSAGE
+========================== */
+
+.chat-success{
+
+    margin:16px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:#ECFDF3;
+
+    color:#15803D;
+
+    border:1px solid rgba(21,128,61,.18);
+
+    text-align:center;
+
+}
+
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media(max-width:768px){
+
+    .message{
+
+        max-width:90%;
+
+    }
+
+    .message-text{
+
+        font-size:14px;
+
+    }
+
+    .chat-header{
+
+        height:64px;
+
+        padding:0 14px;
+
+    }
+
+    #friendImage{
+
+        width:42px;
+
+        height:42px;
+
+    }
+
+    #friendName{
+
+        font-size:16px;
+
+    }
+
+}
+
+
+/* ==========================
+   EXTRA SMALL
+========================== */
+
+@media(max-width:420px){
+
+    #messages{
+
+        padding:12px 10px;
+
+        gap:12px;
+
+    }
+
+    .message{
+
+        max-width:94%;
+
+    }
+
+    .message-text{
+
+        padding:11px 13px;
+
+    }
+
+    .chat-input-area{
+
+        padding:10px;
+
+    }
+
+}
+
+
+/* ==========================
+   LANDSCAPE
+========================== */
+
+@media(orientation:landscape){
+
+    .chat-room{
+
+        max-width:720px;
+
+    }
+
+}
+
+
+/* ==========================
+   SAFE AREA
+========================== */
+
+@supports(padding:max(0px)){
+
+    .chat-input-area{
+
+        padding-bottom:max(12px,env(safe-area-inset-bottom));
+
+    }
+
+}
+
+
+/* ==========================
+   UTILITIES
+========================== */
+
+.hidden{
+
+    display:none !important;
+
+}
+
+.flex{
+
+    display:flex !important;
+
+}
+
+.block{
+
+    display:block !important;
+
+}
+
+.text-center{
+
+    text-align:center !important;
+
+}
+
+.no-scroll{
+
+    overflow:hidden !important;
+
+}
+
+/* ==================================================
+   HIDEX CHAT CSS
+   PART 6/6
+   Final Polish & Optimization
+================================================== */
+
+
+/* ==========================
+   DARK MODE
+========================== */
+
+@media (prefers-color-scheme: dark){
+
+    html,
+    body,
+    .chat-room{
+
+        background:#111111;
+        color:#FFFFFF;
+
+    }
+
+    .chat-header{
+
+        background:#181818;
+        border-bottom:3px solid var(--primary);
+
+    }
+
+    #messages{
+
+        background:#111111;
+
+    }
+
+    .message.received .message-text{
+
+        background:#1F1F1F;
+        color:#FFFFFF;
+        border-color:#303030;
+
+    }
+
+    .message.sent .message-text{
+
+        background:var(--primary);
+
+    }
+
+    .chat-input-area{
+
+        background:#181818;
+        border-top:1px solid #2A2A2A;
+
+    }
+
+    .input-wrapper{
+
+        background:#222222;
+        border-color:#333333;
+
+    }
+
+    #message,
+    #messageInput{
+
+        color:#FFFFFF;
+
+    }
+
+    #message::placeholder,
+    #messageInput::placeholder{
+
+        color:#888888;
+
+    }
+
+    .reply-preview,
+    .file-message,
+    .reaction{
+
+        background:#222222;
+        color:#FFFFFF;
+        border-color:#333333;
+
+    }
+
+}
+
+
+/* ==========================
+   ACCESSIBILITY
+========================== */
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible{
+
+    outline:3px solid rgba(163,22,33,.45);
+    outline-offset:2px;
+
+}
+
+
+/* ==========================
+   REDUCED MOTION
+========================== */
+
+@media (prefers-reduced-motion: reduce){
+
+    *,
+    *::before,
+    *::after{
+
+        animation:none !important;
+        transition:none !important;
+        scroll-behavior:auto !important;
+
+    }
+
+}
+
+
+/* ==========================
+   SMOOTH TRANSITIONS
+========================== */
+
+button,
+.message,
+.message-text,
+.message-image,
+.reaction,
+.attach-btn,
+#send,
+#sendBtn{
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease,
+        opacity .2s ease;
+
+}
+
+.message.sent .message-text:hover{
+
+    box-shadow:0 5px 16px rgba(163,22,33,.30);
+
+}
+
+.message.received .message-text:hover{
+
+    box-shadow:0 5px 16px rgba(0,0,0,.12);
+
+}
+
+
+/* ==========================
+   GLOBAL IMAGES
+========================== */
+
+img{
+
+    display:block;
+
+    max-width:100%;
+
+    user-select:none;
+
+    -webkit-user-drag:none;
+
+}
+
+
+/* ==========================
+   LINKS
+========================== */
+
+a{
+
+    color:var(--primary);
+
+    text-decoration:none;
+
+}
+
+a:hover{
+
+    text-decoration:underline;
+
+}
+
+
+/* ==========================
+   TEXT SELECTION
+========================== */
+
+::selection{
+
+    background:var(--primary);
+
+    color:#FFFFFF;
+
+}
+
+
+/* ==========================
+   PRINT
+========================== */
+
+@media print{
+
+    .chat-header,
+    .chat-input-area,
+    .message-actions,
+    .message-menu,
+    #imageViewer{
+
+        display:none !important;
+
+    }
+
+    html,
+    body{
+
+        background:#FFFFFF;
+
+        color:#000000;
+
+        overflow:visible;
+
+    }
+
+    .chat-room{
+
+        height:auto;
+
+        overflow:visible;
+
+    }
+
+    #messages{
+
+        overflow:visible;
+
+    }
+
+}
+
+
+/* ==========================
+   PERFORMANCE
+========================== */
+
+.message,
+.message-text,
+.message-image{
+
+    will-change:transform;
+
+}
+
+#messages{
+
+    overflow-anchor:auto;
+
+}
+
+
+/* ==========================
+   FINAL UTILITIES
+========================== */
+
+.round{
+
+    border-radius:50% !important;
+
+}
+
+.shadow{
+
+    box-shadow:0 4px 14px rgba(0,0,0,.12) !important;
+
+}
+
+.w-100{
+
+    width:100% !important;
+
+}
+
+.h-100{
+
+    height:100% !important;
+
+}
+
+.fade{
+
+    animation:messageFade .25s ease;
+
+}
+
+
+/* ==========================
+   FINAL CHAT FIXES
+========================== */
+
+/* Prevent header from moving */
+
+.chat-header{
+
+    position:relative;
+
+    z-index:100;
+
+    flex-shrink:0;
+
+}
+
+/* Keep messages inside the viewport */
+
+#messages{
+
+    min-height:0;
+
+    flex:1;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+}
+
+/* Prevent long content from breaking layout */
+
+.message,
+.message-text,
+.message img,
+.message video{
+
+    max-width:100%;
+
+    word-break:break-word;
+
+    overflow-wrap:anywhere;
+
+}
+
+/* Keep input bar visible */
+
+.chat-input-area{
+
+    flex-shrink:0;
+
+    position:relative;
+
+    z-index:100;
+
+}
+
+/* ==========================
+   END OF FILE
+========================== */

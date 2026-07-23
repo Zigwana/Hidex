@@ -1,470 +1,1431 @@
-import {db} from "./firebase.js";
+// =====================================================
+// Hidex Friends.js
+// Part 1/4
+// Authentication & Initialization
+// =====================================================
 
+import { auth, db } from "./firebase.js";
 
 import {
-
-collection,
-query,
-where,
-getDocs,
-addDoc,
-doc,
-setDoc,
-updateDoc
-
+    onAuthStateChanged
 }
-
 from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-
-let currentUser =
-JSON.parse(localStorage.getItem("hidexUser"));
-
-
-
-if(!currentUser){
-
-location.href="index.html";
-
+import {
+    collection,
+    query,
+    where,
+    getDocs,
+    onSnapshot,
+    addDoc,
+    doc,
+    updateDoc,
+    setDoc,
+    getDoc,
+    serverTimestamp
 }
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
+// =====================================================
+// Globals
+// =====================================================
+
+let currentUser = null;
+
+let requestsListener = null;
+let friendsListener = null;
+
+let initialized = false;
+
+
+// =====================================================
+// Elements
+// =====================================================
 
 const searchInput =
 document.getElementById("search");
 
+const searchButton =
+document.getElementById("searchBtn");
 
 const searchResult =
 document.getElementById("searchResult");
 
-
 const requestsBox =
 document.getElementById("requests");
-
 
 const friendsBox =
 document.getElementById("friends");
 
 
+// =====================================================
+// Authentication
+// =====================================================
 
+onAuthStateChanged(
 
+    auth,
 
-// SEARCH USERS
+    async(firebaseUser)=>{
 
-document
-.getElementById("searchBtn")
-.onclick = async()=>{
+        if(!firebaseUser){
 
+            localStorage.removeItem(
+                "hidexUser"
+            );
 
-let value =
-searchInput.value.trim();
+            location.href="index.html";
 
+            return;
 
+        }
 
-if(!value)return;
+        if(initialized){
 
+            return;
 
+        }
 
-let users=[];
+        try{
 
+            const userSnap = await getDoc(
 
+                doc(
+                    db,
+                    "users",
+                    firebaseUser.uid
+                )
 
-let usernameQuery =
-query(
+            );
 
-collection(db,"hidex_users"),
+            if(!userSnap.exists()){
 
-where("username","==",value)
+                location.href="index.html";
+
+                return;
+
+            }
+
+            currentUser = {
+
+                uid:firebaseUser.uid,
+
+                ...userSnap.data()
+
+            };
+
+            localStorage.setItem(
+
+                "hidexUser",
+
+                JSON.stringify(currentUser)
+
+            );
+
+            initialized = true;
+
+            initializeFriends();
+
+        }
+
+        catch(error){
+
+            console.error(error);
+
+            alert(
+
+                "Unable to load friends."
+
+            );
+
+        }
+
+    }
 
 );
 
 
+// =====================================================
+// Initialize
+// =====================================================
 
-let idQuery =
-query(
+function initializeFriends(){
 
-collection(db,"hidex_users"),
+    if(searchButton){
 
-where("hidexId","==",value)
+        searchButton.onclick =
 
-);
+        searchUsers;
 
+    }
 
+    if(searchInput){
 
-let a=await getDocs(usernameQuery);
+        searchInput.addEventListener(
 
-let b=await getDocs(idQuery);
+            "keydown",
 
+            (event)=>{
 
+                if(event.key==="Enter"){
 
-a.forEach(x=>users.push(x.data()));
+                    event.preventDefault();
 
-b.forEach(x=>users.push(x.data()));
+                    searchUsers();
 
+                }
 
+            }
 
-if(users.length===0){
+        );
 
-searchResult.innerHTML="User not found";
+    }
 
-return;
+    loadRequests();
+
+    loadFriends();
+
+    console.log(
+
+        "Friends Ready"
+
+    );
 
 }
 
+// =====================================================
+// Hidex Friends.js
+// Part 2/4
+// Search Users & Send Friend Requests
+// =====================================================
 
 
-let user=users[0];
+// =====================================================
+// Search Users
+// =====================================================
 
+async function searchUsers(){
 
+    const value =
 
-searchResult.innerHTML=
+    searchInput.value.trim();
 
-`
+    if(value===""){
 
-<p>
+        return;
 
-<b>${user.username}</b>
+    }
 
-<br>
+    searchResult.innerHTML =
 
-${user.hidexId}
+    "<p>Searching...</p>";
 
-</p>
+    try{
 
+        let foundUser = null;
 
-<button id="sendRequest">
+        // Search username
 
-Send Request
+        let usernameQuery = query(
 
-</button>
+            collection(
+                db,
+                "users"
+            ),
+
+            where(
+                "username",
+                "==",
+                value
+            )
+
+        );
+
+        let usernameSnap =
+
+        await getDocs(
+
+            usernameQuery
+
+        );
+
+        if(!usernameSnap.empty){
+
+            foundUser = {
+
+                uid:
+                usernameSnap.docs[0].id,
+
+                ...usernameSnap.docs[0].data()
+
+            };
+
+        }
+
+        // Search Hidex ID
+
+        if(!foundUser){
+
+            let hidexQuery = query(
+
+                collection(
+                    db,
+                    "users"
+                ),
+
+                where(
+                    "hidexId",
+                    "==",
+                    value
+                )
+
+            );
+
+            let hidexSnap =
+
+            await getDocs(
+
+                hidexQuery
+
+            );
+
+            if(!hidexSnap.empty){
+
+                foundUser = {
+
+                    uid:
+                    hidexSnap.docs[0].id,
+
+                    ...hidexSnap.docs[0].data()
+
+                };
+
+            }
+
+        }
+
+        if(!foundUser){
+
+            searchResult.innerHTML =
+
+            "<p>User not found.</p>";
+
+            return;
+
+        }
+
+        if(foundUser.uid===currentUser.uid){
+
+            searchResult.innerHTML = `
+
+<div class="user-card">
+
+    <h3>
+
+        ${escapeHtml(foundUser.username)}
+
+    </h3>
+
+    <p>
+
+        This is your account.
+
+    </p>
+
+</div>
 
 `;
 
+            return;
 
+        }
 
+        // Already friends?
 
+        const friendSnap =
 
-document
-.getElementById("sendRequest")
-.onclick=async()=>{
+        await getDoc(
 
+            doc(
 
-await addDoc(
+                db,
 
-collection(db,"friend_requests"),
+                "friends",
 
-{
+                currentUser.uid +
 
-from:currentUser.uid,
+                "_" +
 
-to:user.uid,
+                foundUser.uid
 
-fromName:currentUser.username,
+            )
 
-status:"pending",
+        );
 
-createdAt:new Date()
+        if(friendSnap.exists()){
 
-}
+            searchResult.innerHTML = `
 
-);
+<div class="user-card">
 
+    <h3>
 
+        ${escapeHtml(foundUser.username)}
 
-alert("Request sent");
+    </h3>
 
-};
+    <p>
 
+        Already friends.
 
-};
+    </p>
 
+</div>
 
+`;
 
+            return;
 
+        }
 
+        searchResult.innerHTML = `
 
-// REQUESTS
+<div class="user-card">
 
-async function loadRequests(){
+<img
 
+src="${
 
-let q=
+foundUser.profileImage ||
 
-query(
+"images/default.png"
 
-collection(db,"friend_requests"),
+}"
 
-where("to","==",currentUser.uid),
+class="user-image"
 
-where("status","==","pending")
+onerror="this.src='images/default.png'"
 
-);
+>
 
+<h3>
 
+${escapeHtml(foundUser.username)}
 
-let snap=await getDocs(q);
-
-
-
-requestsBox.innerHTML="";
-
-
-
-snap.forEach(item=>{
-
-
-let data=item.data();
-
-
-
-requestsBox.innerHTML +=
-
-
-`
+</h3>
 
 <p>
 
-${data.fromName}
+${escapeHtml(foundUser.hidexId)}
+
+</p>
+
+<button
+
+id="sendFriendRequest"
+
+>
+
+Send Friend Request
+
+</button>
+
+</div>
+
+`;
+
+        document
+
+        .getElementById(
+
+            "sendFriendRequest"
+
+        )
+
+        .onclick = ()=>{
+
+            sendFriendRequest(
+
+                foundUser
+
+            );
+
+        };
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        searchResult.innerHTML =
+
+        "<p>Search failed.</p>";
+
+    }
+
+}
 
 
-<button onclick="accept('${item.id}','${data.from}')">
+// =====================================================
+// Send Friend Request
+// =====================================================
+
+async function sendFriendRequest(user){
+
+    try{
+
+        // Prevent duplicate requests
+
+        const pending = query(
+
+            collection(
+
+                db,
+
+                "friend_requests"
+
+            ),
+
+            where(
+
+                "from",
+
+                "==",
+
+                currentUser.uid
+
+            ),
+
+            where(
+
+                "to",
+
+                "==",
+
+                user.uid
+
+            ),
+
+            where(
+
+                "status",
+
+                "==",
+
+                "pending"
+
+            )
+
+        );
+
+        const pendingSnap =
+
+        await getDocs(
+
+            pending
+
+        );
+
+        if(!pendingSnap.empty){
+
+            alert(
+
+                "Friend request already sent."
+
+            );
+
+            return;
+
+        }
+
+        await addDoc(
+
+            collection(
+
+                db,
+
+                "friend_requests"
+
+            ),
+
+            {
+
+                from:
+
+                currentUser.uid,
+
+                to:
+
+                user.uid,
+
+                fromName:
+
+                currentUser.username,
+
+                fromImage:
+
+                currentUser.profileImage ||
+
+                "",
+
+                status:
+
+                "pending",
+
+                createdAt:
+
+                serverTimestamp()
+
+            }
+
+        );
+
+        alert(
+
+            "Friend request sent."
+
+        );
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert(
+
+            "Unable to send request."
+
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// Escape HTML
+// =====================================================
+
+function escapeHtml(text){
+
+    return String(text || "")
+
+        .replace(/&/g,"&amp;")
+
+        .replace(/</g,"&lt;")
+
+        .replace(/>/g,"&gt;")
+
+        .replace(/"/g,"&quot;")
+
+        .replace(/'/g,"&#039;");
+
+}
+
+console.log("Friends Part 2 Ready");
+
+// =====================================================
+// Hidex Friends.js
+// Part 3/4
+// Friend Requests
+// =====================================================
+
+
+// =====================================================
+// Load Friend Requests
+// =====================================================
+
+function loadRequests(){
+
+    if(requestsListener){
+
+        requestsListener();
+
+        requestsListener = null;
+
+    }
+
+    requestsBox.innerHTML = `
+
+        <p>
+
+            Loading requests...
+
+        </p>
+
+    `;
+
+    const requestsQuery = query(
+
+        collection(
+            db,
+            "friend_requests"
+        ),
+
+        where(
+            "to",
+            "==",
+            currentUser.uid
+        ),
+
+        where(
+            "status",
+            "==",
+            "pending"
+        )
+
+    );
+
+    requestsListener = onSnapshot(
+
+        requestsQuery,
+
+        (snapshot)=>{
+
+            if(snapshot.empty){
+
+                requestsBox.innerHTML = `
+
+                    <p>
+
+                        No friend requests.
+
+                    </p>
+
+                `;
+
+                return;
+
+            }
+
+            let html = "";
+
+            snapshot.forEach((request)=>{
+
+                const data = request.data();
+
+                html += `
+
+<div class="user-card">
+
+<img
+
+src="${
+
+data.fromImage ||
+
+"images/default.png"
+
+}"
+
+class="user-image"
+
+onerror="this.src='images/default.png'"
+
+>
+
+<h3>
+
+${escapeHtml(
+
+data.fromName ||
+
+"Unknown User"
+
+)}
+
+</h3>
+
+<div class="request-buttons">
+
+<button
+
+class="accept-request"
+
+data-id="${request.id}"
+
+data-user="${data.from}"
+
+>
 
 Accept
 
 </button>
 
+<button
 
-</p>
+class="decline-request"
+
+data-id="${request.id}"
+
+>
+
+Decline
+
+</button>
+
+</div>
+
+</div>
 
 `;
 
-});
+            });
 
+            requestsBox.innerHTML = html;
+
+            attachRequestButtons();
+
+        },
+
+        (error)=>{
+
+            console.error(
+
+                error
+
+            );
+
+            requestsBox.innerHTML =
+
+            "<p>Unable to load requests.</p>";
+
+        }
+
+    );
+
+}
+
+
+// =====================================================
+// Attach Buttons
+// =====================================================
+
+function attachRequestButtons(){
+
+    document
+
+    .querySelectorAll(
+
+        ".accept-request"
+
+    )
+
+    .forEach((button)=>{
+
+        button.onclick = ()=>{
+
+            acceptRequest(
+
+                button.dataset.id,
+
+                button.dataset.user
+
+            );
+
+        };
+
+    });
+
+    document
+
+    .querySelectorAll(
+
+        ".decline-request"
+
+    )
+
+    .forEach((button)=>{
+
+        button.onclick = ()=>{
+
+            declineRequest(
+
+                button.dataset.id
+
+            );
+
+        };
+
+    });
 
 }
 
 
+// =====================================================
+// Accept Request
+// =====================================================
 
+async function acceptRequest(
 
-window.accept=async(id,friendId)=>{
+    requestId,
 
+    friendId
 
-await setDoc(
+){
 
-doc(
+    try{
 
-db,
+        await setDoc(
 
-"friends",
+            doc(
 
-currentUser.uid+"_"+friendId
+                db,
 
-),
+                "friends",
 
-{
+                currentUser.uid +
 
-user1:currentUser.uid,
+                "_" +
 
-user2:friendId,
+                friendId
 
-createdAt:new Date()
+            ),
+
+            {
+
+                user1:
+
+                currentUser.uid,
+
+                user2:
+
+                friendId,
+
+                createdAt:
+
+                serverTimestamp()
+
+            }
+
+        );
+
+        await setDoc(
+
+            doc(
+
+                db,
+
+                "friends",
+
+                friendId +
+
+                "_" +
+
+                currentUser.uid
+
+            ),
+
+            {
+
+                user1:
+
+                friendId,
+
+                user2:
+
+                currentUser.uid,
+
+                createdAt:
+
+                serverTimestamp()
+
+            }
+
+        );
+
+        await updateDoc(
+
+            doc(
+
+                db,
+
+                "friend_requests",
+
+                requestId
+
+            ),
+
+            {
+
+                status:
+
+                "accepted"
+
+            }
+
+        );
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert(
+
+            "Unable to accept request."
+
+        );
+
+    }
 
 }
 
-);
 
+// =====================================================
+// Decline Request
+// =====================================================
 
+async function declineRequest(
 
-await setDoc(
+    requestId
 
-doc(
+){
 
-db,
+    try{
 
-"friends",
+        await updateDoc(
 
-friendId+"_"+currentUser.uid
+            doc(
 
-),
+                db,
 
-{
+                "friend_requests",
 
-user1:friendId,
+                requestId
 
-user2:currentUser.uid,
+            ),
 
-createdAt:new Date()
+            {
+
+                status:
+
+                "declined"
+
+            }
+
+        );
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert(
+
+            "Unable to decline request."
+
+        );
+
+    }
 
 }
 
-);
+console.log("Friends Part 3 Ready");
+
+// =====================================================
+// Hidex Friends.js
+// Part 4/4
+// Friends List, Chat & Cleanup
+// =====================================================
 
 
+// =====================================================
+// Load Friends
+// =====================================================
 
-await updateDoc(
+function loadFriends(){
 
-doc(db,"friend_requests",id),
+    if(friendsListener){
 
-{
+        friendsListener();
 
-status:"accepted"
+        friendsListener = null;
 
-}
+    }
 
-);
+    friendsBox.innerHTML = `
 
+        <p>
 
+            Loading friends...
 
-loadRequests();
+        </p>
 
-loadFriends();
+    `;
 
+    const friendsQuery = query(
 
-};
+        collection(
+            db,
+            "friends"
+        ),
 
+        where(
+            "user1",
+            "==",
+            currentUser.uid
+        )
 
+    );
 
+    friendsListener = onSnapshot(
 
+        friendsQuery,
 
+        async(snapshot)=>{
 
+            if(snapshot.empty){
 
-// FRIEND LIST
+                friendsBox.innerHTML = `
 
-async function loadFriends(){
+                    <p>
 
+                        No friends yet.
 
-let q=
+                    </p>
 
-query(
+                `;
 
-collection(db,"friends"),
+                return;
 
-where("user1","==",currentUser.uid)
+            }
 
-);
+            let html = "";
 
+            for(const item of snapshot.docs){
 
+                const friendId =
 
-let snap=await getDocs(q);
+                    item.data().user2;
 
+                try{
 
+                    const friendSnap =
 
-friendsBox.innerHTML="";
+                    await getDoc(
 
+                        doc(
 
+                            db,
 
-for(let item of snap.docs){
+                            "users",
 
+                            friendId
 
-let friendId=item.data().user2;
+                        )
 
+                    );
 
+                    if(!friendSnap.exists()){
 
-let userQuery=
+                        continue;
 
-query(
+                    }
 
-collection(db,"hidex_users"),
+                    const friend =
 
-where("uid","==",friendId)
+                    friendSnap.data();
 
-);
+                    html += `
 
+<div class="user-card">
 
+<img
 
-let users=
+src="${
 
-await getDocs(userQuery);
+friend.profileImage ||
 
+"images/default.png"
 
+}"
 
-users.forEach(friend=>{
+class="user-image"
 
+onerror="this.src='images/default.png'"
 
-let data=friend.data();
+>
 
+<h3>
 
+${escapeHtml(
 
-friendsBox.innerHTML +=
+friend.username ||
 
+"Unknown User"
 
-`
+)}
+
+</h3>
 
 <p>
 
-<b>${data.username}</b>
+${escapeHtml(
 
+friend.hidexId ||
 
-<br>
+""
 
+)}
 
-${data.hidexId}
+</p>
 
+<button
 
+class="chat-button"
 
-<button onclick="openChat('${data.uid}','${data.username}')">
+data-id="${friendId}"
+
+data-name="${friend.username}"
+
+>
 
 Chat
 
 </button>
 
-
-</p>
-
+</div>
 
 `;
 
+                }
 
+                catch(error){
 
-});
+                    console.error(error);
 
+                }
+
+            }
+
+            friendsBox.innerHTML = html;
+
+            attachChatButtons();
+
+        },
+
+        (error)=>{
+
+            console.error(error);
+
+            friendsBox.innerHTML =
+
+            "<p>Unable to load friends.</p>";
+
+        }
+
+    );
 
 }
 
 
+// =====================================================
+// Chat Buttons
+// =====================================================
+
+function attachChatButtons(){
+
+    document
+
+    .querySelectorAll(
+
+        ".chat-button"
+
+    )
+
+    .forEach((button)=>{
+
+        button.onclick = ()=>{
+
+            openChat(
+
+                button.dataset.id,
+
+                button.dataset.name
+
+            );
+
+        };
+
+    });
 
 }
 
 
+// =====================================================
+// Open Chat
+// =====================================================
+
+function openChat(
+
+    friendId,
+
+    friendName
+
+){
+
+    localStorage.setItem(
+
+        "chatFriendId",
+
+        friendId
+
+    );
+
+    localStorage.setItem(
+
+        "chatFriend",
+
+        friendName
+
+    );
+
+    location.href =
+
+    "chat.html";
+
+}
 
 
+// =====================================================
+// Manual Refresh
+// =====================================================
 
+window.refreshFriends = ()=>{
 
-window.openChat=(id,name)=>{
+    loadRequests();
 
-
-localStorage.setItem(
-
-"chatFriendId",
-
-id
-
-);
-
-
-
-localStorage.setItem(
-
-"chatFriend",
-
-name
-
-);
-
-
-
-location.href="chat.html";
-
+    loadFriends();
 
 };
 
 
+// =====================================================
+// Session Check
+// =====================================================
+
+window.checkFriendsSession = ()=>{
+
+    if(!auth.currentUser){
+
+        location.href="index.html";
+
+        return false;
+
+    }
+
+    return true;
+
+};
 
 
+// =====================================================
+// Cleanup
+// =====================================================
 
-loadRequests();
+function cleanup(){
 
-loadFriends();
+    if(requestsListener){
+
+        requestsListener();
+
+        requestsListener = null;
+
+    }
+
+    if(friendsListener){
+
+        friendsListener();
+
+        friendsListener = null;
+
+    }
+
+}
+
+
+window.addEventListener(
+
+    "pagehide",
+
+    cleanup
+
+);
+
+
+window.addEventListener(
+
+    "beforeunload",
+
+    cleanup
+
+);
+
+
+// =====================================================
+// Visibility Refresh
+// =====================================================
+
+document.addEventListener(
+
+    "visibilitychange",
+
+    ()=>{
+
+        if(
+
+            !document.hidden &&
+
+            currentUser
+
+        ){
+
+            loadRequests();
+
+            loadFriends();
+
+        }
+
+    }
+
+);
+
+
+// =====================================================
+// Default Image
+// =====================================================
+
+window.defaultImage = (img)=>{
+
+    img.src =
+
+    "images/default.png";
+
+};
+
+
+// =====================================================
+// Ready
+// =====================================================
+
+console.log("================================");
+
+console.log("Hidex Friends Ready");
+
+console.log(
+
+    "Current User:",
+
+    currentUser
+
+);
+
+console.log("================================");

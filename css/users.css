@@ -1,0 +1,811 @@
+/* ==================================================
+   HIDEX USERS & FRIENDS
+   Production Edition
+   Part 1/4
+================================================== */
+
+/* ==========================
+   RESET
+========================== */
+
+*,
+*::before,
+*::after{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+    overflow-x:hidden;
+    background:#FBF8F1;
+    color:#111111;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+}
+
+/* ==========================
+   VARIABLES
+========================== */
+
+:root{
+
+    --primary:#a31621;
+    --primary-dark:#82111a;
+
+    --cream:#FBF8F1;
+
+    --white:#FFFFFF;
+
+    --black:#111111;
+
+    --gray:#666666;
+
+    --light-gray:#999999;
+
+    --border:#E8E1D9;
+
+    --online:#2ECC71;
+
+    --offline:#B0B0B0;
+
+    --shadow:
+        0 5px 18px rgba(0,0,0,.06);
+
+    --shadow-hover:
+        0 10px 24px rgba(0,0,0,.10);
+
+    --radius:18px;
+
+    --transition:.25s ease;
+
+}
+
+/* ==========================
+   PAGE
+========================== */
+
+.users-page{
+
+    width:100%;
+    max-width:430px;
+
+    margin:auto;
+
+    min-height:100vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    background:var(--cream);
+
+}
+
+/* ==========================
+   HEADER
+========================== */
+
+.users-header{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+    background:var(--primary);
+
+    color:#fff;
+
+    padding:20px 18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    box-shadow:
+
+        0 3px 12px rgba(0,0,0,.15);
+
+}
+
+.users-header h1,
+.users-header h2,
+.users-header h3{
+
+    color:#fff;
+
+    margin:0;
+
+    font-size:20px;
+
+    font-weight:700;
+
+}
+
+.users-header button{
+
+    background:none;
+
+    border:none;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+}
+
+/* ==========================
+   CONTENT
+========================== */
+
+.users-content{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:18px;
+
+}
+
+.users-content::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+.users-content::-webkit-scrollbar-thumb{
+
+    background:var(--primary);
+
+    border-radius:50px;
+
+}
+
+.users-content::-webkit-scrollbar-track{
+
+    background:#F4EFE8;
+
+}
+
+/* ==========================
+   SEARCH
+========================== */
+
+.search-box{
+
+    position:sticky;
+
+    top:0;
+
+    background:var(--cream);
+
+    padding-bottom:15px;
+
+    z-index:50;
+
+}
+
+.search-box input{
+
+    width:100%;
+
+    padding:14px 18px;
+
+    border-radius:30px;
+
+    border:1px solid var(--border);
+
+    background:#fff;
+
+    outline:none;
+
+    font-size:15px;
+
+    transition:var(--transition);
+
+}
+
+.search-box input:focus{
+
+    border-color:var(--primary);
+
+    box-shadow:
+
+        0 0 0 3px
+
+        rgba(163,22,33,.12);
+
+}
+
+.search-box input::placeholder{
+
+    color:#999;
+
+}
+
+/* ==========================
+   SECTION TITLE
+========================== */
+
+.section-title{
+
+    margin:15px 0;
+
+    color:var(--primary);
+
+    font-size:17px;
+
+    font-weight:700;
+
+}
+
+/* ==========================================
+   USER ACTION BUTTONS
+========================================== */
+
+.user-btns{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-shrink:0;
+}
+
+.user-btn,
+.user-action-btn,
+.message-btn,
+.friend-btn{
+
+    min-width:82px;
+    height:38px;
+
+    border:none;
+    border-radius:10px;
+
+    background:#a31621;
+    color:#FFFFFF;
+
+    font-size:13px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:
+        background .2s ease,
+        transform .15s ease;
+
+}
+
+.user-btn:hover,
+.user-action-btn:hover,
+.message-btn:hover,
+.friend-btn:hover{
+
+    background:#87121b;
+
+}
+
+.user-btn:active,
+.user-action-btn:active,
+.message-btn:active,
+.friend-btn:active{
+
+    transform:scale(.97);
+
+}
+
+.user-btn.secondary{
+
+    background:#EEEEEE;
+    color:#111111;
+
+}
+
+.user-btn.secondary:hover{
+
+    background:#DDDDDD;
+
+}
+
+
+/* ==========================================
+   FRIEND STATUS
+========================================== */
+
+.friend-status{
+
+    display:flex;
+    align-items:center;
+    gap:6px;
+
+    margin-top:4px;
+
+    font-size:12px;
+    color:#777777;
+
+}
+
+.friend-status.online{
+
+    color:#2ECC71;
+
+}
+
+.friend-status.offline{
+
+    color:#888888;
+
+}
+
+
+/* ==========================================
+   EMPTY STATE
+========================================== */
+
+.empty-users{
+
+    width:100%;
+
+    padding:50px 20px;
+
+    text-align:center;
+
+    color:#777777;
+
+}
+
+.empty-users img{
+
+    width:90px;
+    height:90px;
+
+    margin:0 auto 18px;
+
+    opacity:.55;
+
+}
+
+.empty-users h3{
+
+    color:#a31621;
+
+    margin-bottom:10px;
+
+}
+
+.empty-users p{
+
+    line-height:1.6;
+
+}
+
+
+/* ==========================================
+   LOADING STATE
+========================================== */
+
+.loading-users{
+
+    width:100%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:40px;
+
+}
+
+.loading-spinner{
+
+    width:36px;
+    height:36px;
+
+    border-radius:50%;
+
+    border:4px solid rgba(0,0,0,.12);
+    border-top-color:#a31621;
+
+    animation:userSpin .8s linear infinite;
+
+}
+
+@keyframes userSpin{
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+
+/* ==========================================
+   SEARCH BAR
+========================================== */
+
+.search-users{
+
+    position:sticky;
+    top:0;
+
+    background:#FBF8F1;
+
+    padding:14px 16px;
+
+    z-index:20;
+
+}
+
+.search-users input{
+
+    width:100%;
+
+    padding:12px 16px;
+
+    border:1px solid #E5DED5;
+
+    border-radius:12px;
+
+    background:#FFFFFF;
+
+    font-size:15px;
+
+    outline:none;
+
+}
+
+.search-users input:focus{
+
+    border-color:#a31621;
+
+    box-shadow:0 0 0 3px rgba(163,22,33,.12);
+
+}
+
+
+/* ==========================================
+   DIVIDERS
+========================================== */
+
+.users-divider{
+
+    margin:18px 0;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    color:#999999;
+
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media(max-width:480px){
+
+    .user-card{
+
+        padding:12px;
+
+        gap:10px;
+
+    }
+
+    .user-avatar{
+
+        width:46px;
+        height:46px;
+
+    }
+
+    .user-name{
+
+        font-size:15px;
+
+    }
+
+    .user-id{
+
+        font-size:11px;
+
+    }
+
+    .user-btn,
+    .user-action-btn{
+
+        min-width:72px;
+
+        font-size:12px;
+
+        height:36px;
+
+    }
+
+}
+
+/* ==========================================
+   UTILITIES
+========================================== */
+
+.hidden{
+    display:none !important;
+}
+
+.invisible{
+    visibility:hidden !important;
+}
+
+.flex{
+    display:flex;
+}
+
+.flex-column{
+    display:flex;
+    flex-direction:column;
+}
+
+.flex-center{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.space-between{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.w-100{
+    width:100%;
+}
+
+.h-100{
+    height:100%;
+}
+
+.text-center{
+    text-align:center;
+}
+
+.text-right{
+    text-align:right;
+}
+
+.mt-5{margin-top:5px;}
+.mt-10{margin-top:10px;}
+.mt-15{margin-top:15px;}
+.mt-20{margin-top:20px;}
+
+.mb-5{margin-bottom:5px;}
+.mb-10{margin-bottom:10px;}
+.mb-15{margin-bottom:15px;}
+.mb-20{margin-bottom:20px;}
+
+.p-10{padding:10px;}
+.p-15{padding:15px;}
+.p-20{padding:20px;}
+
+.rounded{
+    border-radius:16px;
+}
+
+.shadow{
+    box-shadow:0 4px 16px rgba(0,0,0,.08);
+}
+
+/* ==========================================
+   EMPTY STATES
+========================================== */
+
+.empty-state{
+    padding:60px 20px;
+    text-align:center;
+    color:#777;
+}
+
+.empty-state img{
+    width:90px;
+    margin:auto auto 15px;
+    opacity:.7;
+}
+
+.empty-state h3{
+    margin-bottom:8px;
+    color:#a31621;
+}
+
+.empty-state p{
+    font-size:14px;
+}
+
+/* ==========================================
+   LOADER
+========================================== */
+
+.loader{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:4px solid #eee;
+    border-top-color:#a31621;
+    animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+/* ==========================================
+   FADE ANIMATION
+========================================== */
+
+.fade-in{
+    animation:fade .25s ease;
+}
+
+@keyframes fade{
+
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+
+}
+
+/* ==========================================
+   SCALE ANIMATION
+========================================== */
+
+.scale-in{
+    animation:scaleIn .2s ease;
+}
+
+@keyframes scaleIn{
+
+    from{
+        opacity:0;
+        transform:scale(.95);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+
+}
+
+/* ==========================================
+   SCROLLBAR
+========================================== */
+
+::-webkit-scrollbar{
+    width:7px;
+}
+
+::-webkit-scrollbar-track{
+    background:#F5F1EB;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#a31621;
+    border-radius:20px;
+}
+
+/* Firefox */
+
+*{
+    scrollbar-width:thin;
+    scrollbar-color:#a31621 #F5F1EB;
+}
+
+/* ==========================================
+   IMAGE PLACEHOLDER
+========================================== */
+
+.user-image{
+    width:54px;
+    height:54px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#eee;
+    flex-shrink:0;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:480px){
+
+    .user-card{
+
+        padding:14px;
+
+    }
+
+    .user-image{
+
+        width:46px;
+        height:46px;
+
+    }
+
+    .user-info h4{
+
+        font-size:15px;
+
+    }
+
+    .primary-btn,
+    .secondary-btn{
+
+        font-size:14px;
+        padding:10px 14px;
+
+    }
+
+}
+
+/* ==========================================
+   SAFE AREA SUPPORT
+========================================== */
+
+@supports(padding:max(0px)){
+
+.bottom-nav{
+
+padding-bottom:max(
+10px,
+env(safe-area-inset-bottom)
+);
+
+}
+
+.page-content{
+
+padding-bottom:max(
+90px,
+env(safe-area-inset-bottom)
+);
+
+}
+
+}
+
+/* ==========================================
+   END OF USERS.CSS
+========================================== */

@@ -1,51 +1,152 @@
-import {auth} from "./firebase.js";
+// =====================================================
+// Hidex Auth Check.js
+// Fixed Version
+// =====================================================
 
+import { auth, db } from "./firebase.js";
 
 import {
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-onAuthStateChanged
-
-}
-
-from
-
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
+import {
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
+// =====================================================
+// Authentication Listener
+// =====================================================
 
+onAuthStateChanged(auth, async (firebaseUser) => {
 
-onAuthStateChanged(auth,(user)=>{
+    // ----------------------------
+    // Not Signed In
+    // ----------------------------
 
+    if (!firebaseUser) {
 
-if(user){
+        localStorage.removeItem("hidexUser");
 
+        const page =
+            location.pathname.split("/").pop();
 
-console.log(
+        if (page !== "index.html" && page !== "") {
 
-"Logged in:",
+            location.replace("index.html");
 
-user.uid
+        }
 
-);
+        return;
 
+    }
 
+    try {
 
-}
+        const userRef = doc(
+            db,
+            "users",
+            firebaseUser.uid
+        );
 
-else{
+        const userSnap = await getDoc(userRef);
 
+        if (!userSnap.exists()) {
 
-console.log(
+            console.error(
+                "User profile not found."
+            );
 
-"No Firebase user"
+            localStorage.removeItem(
+                "hidexUser"
+            );
 
-);
+            location.replace("index.html");
 
+            return;
 
+        }
 
-}
+        const data = userSnap.data();
 
+        const session = {
 
+            uid: firebaseUser.uid,
+
+            username:
+                data.username || "Unknown User",
+
+            email:
+                data.email ||
+                firebaseUser.email ||
+                "",
+
+            hidexId:
+                data.hidexId || "",
+
+            profileImage:
+                data.profileImage || "",
+
+            role:
+                data.role || "user"
+
+        };
+
+        localStorage.setItem(
+            "hidexUser",
+            JSON.stringify(session)
+        );
+
+        console.log(
+            "Authenticated:",
+            session.username
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Authentication failed:",
+            error
+        );
+
+    }
 
 });
+
+
+// =====================================================
+// Helper
+// =====================================================
+
+window.getCurrentUser = function () {
+
+    try {
+
+        const user =
+            JSON.parse(
+                localStorage.getItem(
+                    "hidexUser"
+                )
+            );
+
+        return user || null;
+
+    }
+
+    catch {
+
+        return null;
+
+    }
+
+};
+
+
+// =====================================================
+// Ready
+// =====================================================
+
+console.log("Hidex Auth Ready");

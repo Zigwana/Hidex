@@ -1,0 +1,1353 @@
+/* ==================================================
+   HOME PAGE
+   Clean Fixed Version - Part 1/4
+
+   Palette:
+   Red:   #a31621
+   Dark:  #111111
+   Cream: #FBF8F1
+   White: #FFFFFF
+================================================== */
+
+
+/* ==========================
+   GLOBAL RESET
+========================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background: #FBF8F1;
+    color: #111111;
+    font-family: -apple-system, BlinkMacSystemFont,
+                 "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+
+/* ==========================
+   HOME CONTAINER
+========================== */
+
+.home {
+    width: 100%;
+    max-width: 430px;
+    height: 100dvh;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    background: #FBF8F1;
+}
+
+
+/* ==========================
+   TOP BAR
+========================== */
+
+.topBar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    flex-shrink: 0;
+    background: #a31621;
+    box-shadow: 0 2px 10px rgba(163,22,33,.2);
+    z-index: 20;
+}
+
+
+.logo {
+    color: #FFFFFF;
+    font-size: 32px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+.topBar input {
+    flex: 1;
+    min-width: 0;
+    height: 42px;
+    padding: 0 15px;
+    border: none;
+    outline: none;
+    border-radius: 25px;
+    background: #FFFFFF;
+    color: #111111;
+    font-size: 15px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,.05);
+}
+
+
+.topBar input::placeholder {
+    color: #888888;
+}
+
+
+.topBar input:focus {
+    box-shadow: 0 0 0 2px rgba(255,255,255,.25);
+}
+
+
+/* ==========================
+   SETTINGS ICON
+========================== */
+
+.settings {
+    position: relative;
+    flex-shrink: 0;
+}
+
+
+.settings img {
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    transition: transform .2s ease;
+}
+
+
+.settings img:hover {
+    transform: rotate(15deg);
+}
+
+
+/* ==========================
+   SETTINGS DROPDOWN
+========================== */
+
+#settingsMenu {
+    display: none;
+    position: absolute;
+    top: 45px;
+    right: 0;
+
+    width: 190px;
+
+    background: #FFFFFF;
+    border: 1px solid #E8E1D9;
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+
+    z-index: 9999;
+}
+
+
+#settingsMenu.show {
+    display: block;
+}
+
+
+#settingsMenu a {
+    display: block;
+
+    padding: 14px;
+
+    text-decoration: none;
+
+    color: #111111;
+
+    border-bottom: 1px solid #F0EBE1;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
+}
+
+
+#settingsMenu a:last-child {
+    border-bottom: none;
+}
+
+
+#settingsMenu a:hover {
+    background: #FBF8F1;
+    color: #a31621;
+}
+
+
+/* ==========================
+   PROFILE CARD
+========================== */
+
+.profileCard {
+
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    margin: 12px;
+
+    padding: 15px;
+
+    background: #FFFFFF;
+
+    border: 1px solid #E8E1D9;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,.04);
+
+    flex-shrink: 0;
+}
+
+
+.profileCard img {
+
+    width: 60px;
+    height: 60px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    flex-shrink: 0;
+}
+
+
+.profileInfo {
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+.profileInfo h3 {
+
+    margin: 0;
+
+    font-size: 18px;
+
+    color: #111111;
+
+}
+
+
+.profileInfo p {
+
+    margin: 5px 0 0;
+
+    font-size: 13px;
+
+    color: #666666;
+
+}
+
+/* ==================================================
+   PART 2/4
+   TABS • PAGE • CHAT CARDS • GROUPS
+================================================== */
+
+
+/* ==========================
+   PAGE CONTENT AREA
+========================== */
+
+.page{
+
+
+    min-height:0;
+
+    height:auto;
+
+    padding-bottom:110px;
+    
+    display:block;
+
+    height:calc(100dvh - 135px);
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    padding:15px 15px 90px;
+
+    -webkit-overflow-scrolling:touch;
+
+}
+
+#usersTab{
+
+    overflow-y:auto;
+
+}
+#userList{
+
+    overflow:visible;
+
+    padding-bottom:100px;
+
+}
+
+/* Scrollbar */
+
+.page::-webkit-scrollbar {
+    width: 5px;
+}
+
+.page::-webkit-scrollbar-thumb {
+    background: #a31621;
+    border-radius: 20px;
+}
+
+.page::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+/* ==========================
+   TABS
+========================== */
+
+.tabs {
+    flex-shrink: 0;
+bottom: 0;
+    left: 0;
+    height: 65px;
+
+    display: flex;
+    align-items: center;
+
+    background: #FFFFFF;
+
+    border-top: 1px solid #E8E1D9;
+
+    box-shadow:
+        0 -2px 8px rgba(0,0,0,.03);
+
+    z-index: 1000;
+    position: fixed;
+    width: 100%;
+}
+
+
+.tabs button {
+
+    flex: 1;
+
+    height: 100%;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: #888888;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        color .2s ease,
+        background .2s ease;
+}
+
+
+.tabs button:hover {
+
+    color: #a31621;
+
+}
+
+
+.tabs button.active {
+
+    color: #a31621;
+
+    background: #FBF8F1;
+
+    border-top: 3px solid #a31621;
+
+}
+
+
+
+/* ==========================
+   CHAT CARD
+========================== */
+
+
+.chat-card {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px;
+
+    margin-bottom: 12px;
+
+    background: #FFFFFF;
+
+    border: 1px solid #E8E1D9;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,.04);
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+
+.chat-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 16px rgba(0,0,0,.08);
+
+}
+
+
+
+.chat-card img {
+
+    width: 55px;
+
+    height: 55px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    flex-shrink: 0;
+
+}
+
+
+
+.chat-info {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+
+
+.chat-info h3 {
+
+    margin: 0;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    font-size: 17px;
+
+    color: #111111;
+
+}
+
+
+
+.chat-info p {
+
+    margin: 5px 0 0;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    font-size: 13px;
+
+    color: #666666;
+
+}
+
+
+
+.time {
+
+    align-self: flex-start;
+
+    font-size: 12px;
+
+    color: #888888;
+
+    white-space: nowrap;
+
+}
+
+
+
+/* ==========================
+   GROUP CARDS
+========================== */
+
+
+.group-card {
+
+    width: 100%;
+
+    padding: 15px;
+
+    margin-bottom: 12px;
+
+    background: #FFFFFF;
+
+    border: 1px solid #E8E1D9;
+
+    border-radius: 15px;
+
+    color: #111111;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,.04);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+
+.group-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 16px rgba(0,0,0,.08);
+
+}
+
+
+
+.group-card h3 {
+
+    margin: 0 0 6px;
+
+    font-size: 17px;
+
+}
+
+
+
+.group-card p {
+
+    margin: 0;
+
+    font-size: 14px;
+
+    color: #666666;
+
+}
+
+
+
+/* ==========================
+   EMPTY STATES
+========================== */
+
+
+#notifications,
+#groups {
+
+    margin-top: 30px;
+
+    text-align: center;
+
+    color: #666666;
+
+    font-size: 16px;
+
+    line-height: 1.5;
+
+}
+
+/* ==================================================
+   PART 3/4
+   FLOATING BUTTON • NAVIGATION • RESPONSIVE
+================================================== */
+
+
+/* ==========================
+   FLOATING ACTION BUTTON
+========================== */
+
+.plusButton,
+.fab-button,
+#fab,
+.floating-btn {
+
+    position: fixed;
+
+    right: 20px;
+
+    bottom: 85px;
+
+    width: 60px;
+
+    height: 60px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #a31621;
+
+    color: #FFFFFF;
+
+    cursor: pointer;
+
+    z-index: 1001;
+
+    pointer-events: auto;
+
+}
+
+
+.plusButton:hover,
+.fab-button:hover,
+#fab:hover,
+.floating-btn:hover {
+
+    transform: scale(1.05);
+
+    box-shadow:
+        0 8px 20px rgba(163,22,33,.40);
+
+}
+
+
+
+.plusButton:active,
+.fab-button:active,
+#fab:active,
+.floating-btn:active {
+
+    transform: scale(.95);
+
+}
+
+
+
+/* ==========================
+   BOTTOM NAVIGATION
+========================== */
+
+
+.bottom-nav,
+.nav-tabs {
+
+    position: fixed;
+
+    left: 0;
+
+    right: 0;
+
+    bottom: 0;
+
+
+    height: 65px;
+
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-around;
+
+
+    background: #FFFFFF;
+
+
+    border-top: 1px solid #E8E1D9;
+
+
+    box-shadow:
+        0 -4px 12px rgba(0,0,0,.04);
+
+
+    z-index: 1000;
+
+}
+
+
+
+/*
+   If your HTML uses .tabs as bottom navigation,
+   this keeps it working without conflict.
+*/
+
+.tabs.fixed-nav {
+
+    position: fixed;
+
+    left: 0;
+
+    right: 0;
+
+    bottom: 0;
+
+    z-index: 1000;
+
+}
+
+
+
+.bottom-nav button,
+.nav-tabs button {
+
+
+    flex: 1;
+
+    height: 100%;
+
+
+    border: none;
+
+
+    background: transparent;
+
+
+    color: #888888;
+
+
+    font-size: 14px;
+
+
+    font-weight: 600;
+
+
+    cursor: pointer;
+
+
+    transition: color .2s ease;
+
+}
+
+
+
+.bottom-nav button:hover,
+.nav-tabs button:hover {
+
+    color: #a31621;
+
+}
+
+
+
+.bottom-nav button.active,
+.nav-tabs button.active {
+
+    color: #a31621;
+
+    border-top: 3px solid #a31621;
+
+}
+
+
+
+/* ==========================
+   CONTENT SAFE SPACE
+========================== */
+
+
+.content-area,
+.dashboard-body,
+#main-content {
+
+    flex: 1;
+
+    min-height: 0;
+
+    overflow-y: auto;
+
+    padding-bottom: 90px;
+
+    -webkit-overflow-scrolling: touch;
+
+}
+
+
+
+/* ==========================
+   MOBILE RESPONSIVE
+========================== */
+
+
+@media (max-width: 500px) {
+
+
+    .home {
+
+        width: 100%;
+
+        max-width: 100%;
+
+        height: 100dvh;
+
+    }
+
+
+
+    .topBar {
+
+        padding: 12px;
+
+    }
+
+
+
+    .logo {
+
+        font-size: 24px;
+
+    }
+
+
+
+    .topBar input {
+
+        font-size: 14px;
+
+        height: 40px;
+
+    }
+
+
+
+    .profileCard {
+
+        margin: 10px;
+
+        padding: 12px;
+
+    }
+
+
+
+    .chat-card {
+
+        padding: 12px;
+
+        border-radius: 15px;
+
+    }
+
+
+
+    .chat-card img {
+
+        width: 50px;
+
+        height: 50px;
+
+    }
+
+
+
+    .chat-info h3 {
+
+        font-size: 16px;
+
+    }
+
+
+
+    .chat-info p {
+
+        font-size: 12px;
+
+    }
+
+
+
+    .plusButton,
+    .fab-button,
+    #fab,
+    .floating-btn {
+
+
+        width: 56px;
+
+        height: 56px;
+
+
+        right: 16px;
+
+
+        bottom: 80px;
+
+    }
+
+}
+
+
+
+/* ==========================
+   TABLET / DESKTOP
+========================== */
+
+
+@media (min-width: 501px) {
+
+
+    .home {
+
+        border-left: 1px solid #E8E1D9;
+
+        border-right: 1px solid #E8E1D9;
+
+
+        box-shadow:
+
+            0 0 20px rgba(0,0,0,.05);
+
+    }
+
+
+}
+
+/* ==================================================
+   PART 4/4
+   USER CARDS • LIST ITEMS • FINAL FIXES
+================================================== */
+
+
+/* ==========================
+   GENERAL LIST CARDS
+========================== */
+
+.chat-item,
+.user-card,
+.person-card,
+.group-item {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 12px 14px;
+
+    margin-bottom: 10px;
+
+    background: #FFFFFF;
+
+    border: 1px solid #E8E1D9;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.03);
+
+    overflow: hidden;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+.chat-item:hover,
+.user-card:hover,
+.person-card:hover,
+.group-item:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 14px rgba(0,0,0,.06);
+
+}
+
+
+
+/* ==========================
+   LEFT CONTENT AREA
+========================== */
+
+
+.user-card-left,
+.card-left-content,
+.chat-item > div:first-child {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+
+
+/* ==========================
+   AVATARS
+========================== */
+
+
+.chat-item img,
+.user-card img,
+.person-card img,
+.group-item img,
+.user-card-left img,
+.card-left-content img {
+
+    width: 44px;
+
+    height: 44px;
+
+    min-width: 44px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 1px solid #E8E1D9;
+
+    flex-shrink: 0;
+
+}
+
+
+
+/* ==========================
+   TEXT CONTENT
+========================== */
+
+
+.user-details,
+.card-text-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+
+
+.user-card h3,
+.person-card h3,
+.chat-item h3,
+.group-item h3,
+.username,
+.card-text-content h3 {
+
+
+    margin: 0;
+
+
+    font-size: 14px;
+
+
+    font-weight: 700;
+
+
+    color: #111111;
+
+
+    overflow: hidden;
+
+
+    white-space: nowrap;
+
+
+    text-overflow: ellipsis;
+
+}
+
+
+
+.user-card p,
+.person-card p,
+.chat-item p,
+.group-item p,
+.hidex-id,
+.status-text {
+
+
+    margin: 0;
+
+
+    font-size: 12px;
+
+
+    color: #666666;
+
+
+    overflow: hidden;
+
+
+    white-space: nowrap;
+
+
+    text-overflow: ellipsis;
+
+}
+
+
+
+/* ==========================
+   ACTION BUTTONS
+========================== */
+
+
+.user-card button,
+.person-card button,
+.chat-item button,
+.group-item button,
+.msg-btn,
+.open-btn {
+
+
+    flex-shrink: 0;
+
+
+    padding: 7px 12px;
+
+
+    border: none;
+
+
+    border-radius: 8px;
+
+
+    background: #a31621;
+
+
+    color: #FFFFFF;
+
+
+    font-size: 12px;
+
+
+    font-weight: 700;
+
+
+    cursor: pointer;
+
+
+    transition:
+
+        background .2s ease,
+
+        transform .2s ease;
+
+}
+
+
+
+.user-card button:hover,
+.person-card button:hover,
+.chat-item button:hover,
+.group-item button:hover,
+.msg-btn:hover,
+.open-btn:hover {
+
+
+    background: #8d131c;
+
+
+}
+
+
+
+.user-card button:active,
+.person-card button:active,
+.chat-item button:active,
+.group-item button:active,
+.msg-btn:active,
+.open-btn:active {
+
+
+    transform: scale(.95);
+
+}
+
+
+
+/* ==========================
+   FORM ELEMENT FIXES
+========================== */
+
+
+button {
+
+    font-family: inherit;
+
+}
+
+
+input {
+
+    font-family: inherit;
+
+}
+
+
+
+/* ==========================
+   SMALL SCREEN LIST FIX
+========================== */
+
+
+@media (max-width: 500px) {
+
+
+    .chat-item,
+    .user-card,
+    .person-card,
+    .group-item {
+
+
+        padding: 10px;
+
+
+        gap: 8px;
+
+    }
+
+
+
+    .chat-item img,
+    .user-card img,
+    .person-card img,
+    .group-item img {
+
+
+        width: 42px;
+
+
+        height: 42px;
+
+
+        min-width: 42px;
+
+    }
+
+
+
+    .user-card button,
+    .person-card button,
+    .chat-item button,
+    .group-item button,
+    .msg-btn,
+    .open-btn {
+
+
+        padding: 6px 10px;
+
+
+        font-size: 11px;
+
+    }
+
+}
+
+
+
+/* ==========================
+   FINAL SAFETY FIXES
+========================== */
+
+
+/* Prevent cards from breaking mobile width */
+
+.chat-card,
+.group-card,
+.chat-item,
+.user-card,
+.person-card,
+.group-item {
+
+    max-width: 100%;
+
+}
+
+
+
+/* Prevent long names from stretching layout */
+
+h1,
+h2,
+h3,
+p {
+
+    overflow-wrap: break-word;
+
+}
+
+
+
+/* Smooth scrolling */
+
+.page,
+.content-area,
+.dashboard-body,
+#main-content {
+
+    scrollbar-width: thin;
+
+    scrollbar-color: #a31621 transparent;
+
+}

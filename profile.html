@@ -1,85 +1,66 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidex Profile</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Hidex Profile</title>
-
-<link rel="stylesheet" href="css/style.css">
-
+    <!-- Cream Theme CSS -->
+    <link rel="stylesheet" href="css/profile.css">
 </head>
-
-
 <body>
 
+<div class="profile-page">
 
-<div class="box">
+    <!-- Header -->
+    <div class="profile-header">
+        Hidex Profile
+    </div>
 
+    <!-- Body Content -->
+    <div class="profile-body">
 
-<h1>
-Hidex Profile
-</h1>
+        <!-- Profile Card View -->
+        <div class="profile-details-card" style="margin-bottom: 20px;">
+            <div id="profileView">
+                Loading profile details...
+            </div>
+        </div>
 
+        <!-- Edit Profile Form Card -->
+        <div class="profile-details-card">
+            <div class="profile-field-item">
+                <label for="imageUrl">Profile Image URL</label>
+                <input id="imageUrl" type="text" placeholder="Paste profile image URL" style="width: 100%; padding: 12px; border: 1px solid #E8E1D9; border-radius: 10px; background: #FBF8F1; color: #111111; box-sizing: border-box; outline: none;">
+            </div>
 
+            <button id="saveProfile" style="width: 100%; background: #a31621; color: #FFFFFF; border: none; border-radius: 10px; padding: 12px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 5px;">
+                Save Profile
+            </button>
 
-<div id="profileView">
+            <p id="message" style="text-align: center; font-size: 13px; color: #a31621; margin-top: 10px;"></p>
+        </div>
 
-</div>
+        <!-- Back to Home Button -->
+        <button onclick="location.href='home.html'" style="width: 100%; background: #FFFFFF; color: #111111; border: 1px solid #E8E1D9; border-radius: 10px; padding: 12px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+            Back to Home
+        </button>
 
-
-
-
-<input
-
-id="imageUrl"
-
-placeholder="Paste profile image URL"
-
->
-
-
-
-<button id="saveProfile">
-
-Save Profile
-
-</button>
-
-
-
-
-<p id="message"></p>
-
-
-
-
-<br>
-
-
-
-<button onclick="location.href='home.html'">
-
-Home
-
-</button>
-
-
+    </div>
 
 </div>
 
-
+<!-- Firebase -->
 <script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/auth-guard.js"></script>
 
-<script type="module" src="js/presence.js"></script>
-
-<script type="module" src="js/home.js"></script>
+<!-- Authentication -->
 <script type="module" src="js/auth-check.js"></script>
 
+<!-- Presence -->
+
+<!-- Profile -->
 <script type="module" src="js/profile.js"></script>
 
-
 </body>
-
 </html>

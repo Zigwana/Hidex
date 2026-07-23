@@ -1,127 +1,524 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
 
-<title>Hidex Home</title>
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="css/style.css">
+<meta
+name="theme-color"
+content="#FBF8F1">
+
+<title>Hidex</title>
+
+<link
+rel="stylesheet"
+href="css/home.css">
+
+<link
+rel="stylesheet"
+href="css/users.css">
+
+<link
+rel="stylesheet"
+href="css/group-view.css">
 
 </head>
 
-
 <body>
 
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
 
-<div class="box">
+<div
+class="home"
+id="main-dashboard">
+
+    <!-- =====================================================
+         TOP BAR
+    ===================================================== -->
+
+    <header class="topBar">
+
+        <h2 class="logo">
+
+            HIDEX
+
+        </h2>
+
+        <input
+
+            id="search"
+
+            type="search"
+
+            placeholder="Search chats..."
+
+            autocomplete="off"
+
+        >
+
+        <div class="settings">
+
+            <img
+
+                src="images/settings.png"
+
+                id="settingsBtn"
+
+                alt="Settings"
+
+            >
+
+            <div id="settingsMenu">
+
+                <a href="profiledisplay.html">
+
+                    My Profile
+
+                </a>
+
+                <a href="profile.html">
+
+                    Edit Profile
+
+                </a>
+
+                <a href="#">
+
+                    Feedback
+
+                </a>
+
+                <a href="#">
+
+                    Reviews
+
+                </a>
+
+                <a href="#">
+
+                    Suggest Feature
+
+                </a>
+
+                <a
+
+                    href="#"
+
+                    id="logout"
+
+                >
+
+                    Logout
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- =====================================================
+         PROFILE CARD
+    ===================================================== -->
+
+    <section
+
+        id="profile"
+
+        class="profileCard"
+
+    >
+
+        Loading profile...
+
+    </section>
+
+    <!-- =====================================================
+         CHATS TAB
+    ===================================================== -->
+
+    <section
+
+        id="messages"
+
+        class="page"
+
+    >
+
+        <div
+
+            id="notifications"
+
+        >
+
+            Loading conversations...
+
+        </div>
+
+    </section>
+        <!-- ==========================================
+         PROFILE CARD
+    =========================================== -->
+
+    <div id="profile" class="profileCard">
+        Loading profile...
+    </div>
 
 
+    <!-- ==========================================
+         TAB : CHATS
+    =========================================== -->
 
-<h1>
-Hidex
-</h1>
+    <section
+        id="messages"
+        class="page active-page"
+    >
+
+        <div id="notifications">
+
+            <div class="user-card">
+
+                <h3>Loading chats...</h3>
+
+            </div>
+
+        </div>
+
+    </section>
 
 
+    <!-- ==========================================
+         TAB : GROUPS
+    =========================================== -->
 
-<h2>
-Welcome
-</h2>
+    <section
+        id="groupsTab"
+        class="page"
+        style="display:none;"
+    >
+
+        <div id="groups">
+
+            <div class="user-card">
+
+                <h3>Loading groups...</h3>
+
+            </div>
+
+        </div>
+
+    </section>
 
 
+    <!-- ==========================================
+         TAB : PEOPLE
+    =========================================== -->
+
+    <section
+        id="usersTab"
+        class="page"
+        style="display:none;"
+    >
+
+        <input
+            id="user-search"
+            type="text"
+            placeholder="Search username or Hidex ID"
+        >
+
+        <div id="userList">
+
+            <div class="user-card">
+
+                <h3>Loading users...</h3>
+
+            </div>
+
+        </div>
+
+    </section>
 
 
-<div id="profile">
+    <!-- ==========================================
+         TAB : CHANNELS
+    =========================================== -->
 
-Loading profile...
+    <section
+        id="channels"
+        class="page"
+        style="display:none;"
+    >
+
+        <button
+            class="channelButton"
+            onclick="location.href='community.html'"
+        >
+
+            🌍 Global Chat
+
+        </button>
+
+    </section>
+
+
+    <!-- ==========================================
+         FLOATING BUTTON
+    =========================================== -->
+
+    <img
+        src="images/plus.png"
+        class="plusButton"
+        alt="Find Friends"
+        onclick="showTab('usersTab')"
+    >
 
 </div>
 
 
-<h3>
-Hidex Groups
-</h3>
+<!-- ==========================================
+     BOTTOM NAVIGATION
+=========================================== -->
 
+<nav class="tabs">
 
-<div id="groups">
+    <button
+        id="tab-btn-messages"
+        class="active"
+        onclick="showTab('messages')"
+    >
+        Chats
+    </button>
 
-Loading groups...
+    <button
+        id="tab-btn-groupsTab"
+        onclick="showTab('groupsTab')"
+    >
+        Groups
+    </button>
+
+    <button
+        id="tab-btn-usersTab"
+        onclick="showTab('usersTab')"
+    >
+        People
+    </button>
+
+    <button
+        id="tab-btn-channels"
+        onclick="showTab('channels')"
+    >
+        Channels
+    </button>
+
+</nav>
+    
+    <!-- GROUP VIEW -->
+
+<!-- ===========================
+     GROUP VIEW
+=========================== -->
+
+<div id="group-view-overlay" class="group-overlay" style="display:none;">
+
+    <div class="group-window">
+
+        <div class="group-header">
+
+            <button onclick="closeGroupOverlay()">←</button>
+
+            <img
+                id="groupImage"
+                src="images/default.png"
+                class="group-avatar"
+            >
+
+            <div class="group-title">
+
+                <h2 id="groupName"></h2>
+
+                <small id="groupCount"></small>
+
+            </div>
+
+        </div>
+
+        <div class="group-info">
+
+            <p id="groupDescription"></p>
+
+            <button id="toggleMembers">
+
+                Members ▼
+
+            </button>
+
+            <div
+                id="members"
+                style="display:none;"
+            ></div>
+
+        </div>
+
+        <div
+            id="chat"
+            class="group-chat"
+        ></div>
+
+        <div class="message-bar">
+
+            <input
+                id="messageText"
+                type="text"
+                placeholder="Type a message..."
+            >
+
+            <button id="sendMessage">
+
+                Send
+
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
+    <!-- ===========================
+     UI SCRIPTS
+=========================== -->
+<script>
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsMenu = document.getElementById("settingsMenu");
 
+if (settingsBtn && settingsMenu) {
 
-<h3>
-Messages
-</h3>
+    settingsBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        settingsMenu.classList.toggle("show");
+    });
 
+    document.addEventListener("click", () => {
+        settingsMenu.classList.remove("show");
+    });
 
+}
 
-<div id="notifications">
+// ------------------------------
+// Bottom Tabs
+// ------------------------------
 
-No new messages
+function showTab(tabId){
 
-</div>
+    const pages = document.querySelectorAll(".page");
 
+    pages.forEach(page=>{
+        page.style.display="none";
+    });
 
+    document.querySelectorAll(".tabs button")
+    .forEach(button=>{
+        button.classList.remove("active");
+    });
 
+    const page=document.getElementById(tabId);
 
+    if(page){
 
-<br>
+        page.style.display="flex";
+        page.style.flexDirection="column";
 
+    }
 
+    const tab=document.getElementById(
+        "tab-btn-"+tabId
+    );
 
-<button onclick="location.href='users.html'">
+    if(tab){
 
-Find People
+        tab.classList.add("active");
 
-</button>
+    }
 
+}
 
-<button onclick="location.href='global.html'">
+// Default tab
 
-🌍 Global Chat
+showTab("messages");
 
-</button>
+// ------------------------------
+// Group Overlay
+// ------------------------------
 
-<button onclick="location.href='chats.html'">
+window.openGroupView=function(){
 
-Chats
+    const overlay=
+    document.getElementById(
+        "group-view-overlay"
+    );
 
-</button>
+    const plus=
+    document.querySelector(
+        ".plusButton"
+    );
 
+    if(overlay){
 
+        overlay.style.display="flex";
 
+    }
 
+    if(plus){
 
-<button onclick="location.href='profile.html'">
+        plus.style.display="none";
 
-Profile
+    }
 
-</button>
+};
 
+window.closeGroupView=function(){
 
+    const overlay=
+    document.getElementById(
+        "group-view-overlay"
+    );
 
+    const plus=
+    document.querySelector(
+        ".plusButton"
+    );
 
+    if(overlay){
 
-<button id="logout">
+        overlay.style.display="none";
 
-Logout
+    }
 
-</button>
+    if(plus){
 
+        plus.style.display="block";
 
+    }
 
+};
+</script>
 
-</div>
-
+<!-- ===========================
+     APP SCRIPTS
+=========================== -->
 
 <script type="module" src="js/firebase.js"></script>
-<script type="module" src="js/group-view.js"></script>
-<script type="module" src="js/presence.js"></script>
+    <script type="module" src="js/auth-guard.js"></script>
 <script type="module" src="js/home.js"></script>
-<script type="module" src="js/auth-check.js"></script>
+<script type="module" src="js/users.js"></script>
+<script type="module" src="js/group-view.js"></script>
 
 </body>
-
 </html>

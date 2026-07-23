@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidex - Community</title>
+
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/friends.css">
+</head>
+
+<body>
+
+<div class="community-container"
+style="
+max-width:430px;
+height:100vh;
+margin:auto;
+display:flex;
+flex-direction:column;
+background:#FBF8F1;
+overflow:hidden;
+">
+
+    <!-- HEADER -->
+
+    <div
+    style="
+    background:#a31621;
+    padding:15px;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    ">
+
+        <h2 style="margin:0;">
+            Hidex Community
+        </h2>
+
+        <button
+        onclick="location.href='home.html'"
+        style="
+        background:rgba(255,255,255,0.2);
+        border:none;
+        color:white;
+        padding:8px 12px;
+        border-radius:8px;
+        cursor:pointer;
+        ">
+            Home
+        </button>
+
+    </div>
+
+    <!-- TABS -->
+
+    <div
+    style="
+    display:flex;
+    background:white;
+    border-bottom:1px solid #E8E1D9;
+    ">
+
+        <button
+        id="tab-friends-btn"
+        onclick="switchCommunityTab('friends')"
+        style="
+        flex:1;
+        padding:12px;
+        border:none;
+        background:none;
+        color:#a31621;
+        border-bottom:2px solid #a31621;
+        font-weight:bold;
+        ">
+            Friends
+        </button>
+
+        <button
+        id="tab-global-btn"
+        onclick="switchCommunityTab('global')"
+        style="
+        flex:1;
+        padding:12px;
+        border:none;
+        background:none;
+        color:#888;
+        font-weight:bold;
+        ">
+            🌍 Global
+        </button>
+
+    </div>
+
+    <!-- FRIENDS VIEW -->
+
+    <div
+    id="friendsView"
+    style="
+    flex:1;
+    overflow-y:auto;
+    padding:15px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    ">
+
+        <!-- SEARCH -->
+
+        <div
+        style="
+        background:white;
+        border-radius:15px;
+        padding:15px;
+        border:1px solid #E8E1D9;
+        ">
+
+            <h3>Find Friends</h3>
+
+            <div style="display:flex; gap:10px;">
+
+                <input
+                id="search"
+                placeholder="Username or Hidex ID"
+                style="
+                flex:1;
+                padding:10px;
+                border:1px solid #E8E1D9;
+                border-radius:10px;
+                ">
+
+                <button
+                id="searchBtn"
+                style="
+                background:#a31621;
+                color:white;
+                border:none;
+                border-radius:10px;
+                padding:10px 15px;
+                ">
+                    Search
+                </button>
+
+            </div>
+
+            <div
+            id="searchResult"
+            style="margin-top:10px;">
+            </div>
+
+        </div>
+
+        <!-- REQUESTS -->
+
+        <div
+        style="
+        background:white;
+        border-radius:15px;
+        padding:15px;
+        border:1px solid #E8E1D9;
+        ">
+
+            <h3>Friend Requests</h3>
+
+            <div id="requests">
+                No requests
+            </div>
+
+        </div>
+
+        <!-- FRIENDS -->
+
+        <div
+        style="
+        background:white;
+        border-radius:15px;
+        padding:15px;
+        border:1px solid #E8E1D9;
+        ">
+
+            <h3>My Friends</h3>
+
+            <div id="friends">
+                Loading friends...
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- GLOBAL CHAT -->
+
+    <div
+    id="globalView"
+    style="
+    flex:1;
+    display:none;
+    flex-direction:column;
+    padding:15px;
+    overflow:hidden;
+    ">
+
+        <!-- Messages -->
+
+        <div
+        id="messages"
+        style="
+        flex:1;
+        overflow-y:auto;
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+        padding-bottom:10px;
+        ">
+            Loading global chat...
+        </div>
+        
+                <!-- Input -->
+
+        <div
+        style="
+        display:flex;
+        gap:10px;
+        background:white;
+        border-top:1px solid #E8E1D9;
+        padding:10px;
+        ">
+
+            <input
+            id="message"
+            type="text"
+            placeholder="Say something..."
+            style="
+            flex:1;
+            padding:12px;
+            border:1px solid #E8E1D9;
+            border-radius:25px;
+            outline:none;
+            ">
+
+            <button
+            id="send"
+            style="
+            background:#a31621;
+            color:white;
+            border:none;
+            width:45px;
+            height:45px;
+            border-radius:50%;
+            cursor:pointer;
+            ">
+                ➤
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function switchCommunityTab(tab){
+
+const friendsView=document.getElementById("friendsView");
+const globalView=document.getElementById("globalView");
+
+const friendsBtn=document.getElementById("tab-friends-btn");
+const globalBtn=document.getElementById("tab-global-btn");
+
+if(tab==="friends"){
+
+friendsView.style.display="flex";
+globalView.style.display="none";
+
+friendsBtn.style.color="#a31621";
+friendsBtn.style.borderBottom="2px solid #a31621";
+
+globalBtn.style.color="#888";
+globalBtn.style.borderBottom="none";
+
+}else{
+
+friendsView.style.display="none";
+globalView.style.display="flex";
+
+globalBtn.style.color="#a31621";
+globalBtn.style.borderBottom="2px solid #a31621";
+
+friendsBtn.style.color="#888";
+friendsBtn.style.borderBottom="none";
+
+}
+
+}
+
+</script>
+
+<!-- Firebase -->
+
+<script type="module" src="js/firebase.js"></script>
+
+    <script type="module" src="js/auth-guard.js"></script>
+
+<!-- Authentication -->
+
+<script type="module" src="js/auth-check.js"></script>
+
+<!-- Presence -->
+
+<!-- Friends -->
+
+<script type="module" src="js/friends.js"></script>
+
+<!-- Global Chat -->
+
+<script type="module" src="js/global.js"></script>
+
+</body>
+</html>

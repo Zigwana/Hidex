@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidex - My Profile</title>
+
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+
+<body style="background:#FBF8F1;margin:0;padding:0;display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;">
+
+<div class="box" style="max-width:380px;width:90%;background:#FFFFFF;border:1px solid #E8E1D9;border-radius:20px;padding:30px 20px;box-sizing:border-box;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,.05);">
+
+    <div style="text-align:left;margin-bottom:15px;">
+        <a href="home.html"
+           style="color:#a31621;text-decoration:none;font-size:14px;font-weight:bold;">
+            ← Back
+        </a>
+    </div>
+
+    <h1 style="color:#a31621;margin-bottom:20px;">
+        My Profile
+    </h1>
+
+    <img
+        id="displayProfileImg"
+        src="images/default.png"
+        alt="Profile"
+        style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid #a31621;">
+
+    <h2
+        id="displayUsername"
+        style="margin:15px 0 5px;">
+        Loading...
+    </h2>
+
+    <div style="text-align:left;background:#FBF8F1;border:1px solid #E8E1D9;border-radius:14px;padding:15px;margin-top:20px;">
+
+        <div style="margin-bottom:15px;">
+            <small>Email</small><br>
+            <strong id="displayEmail">
+                Loading...
+            </strong>
+        </div>
+
+        <div>
+            <small>Hidex ID</small><br>
+            <strong id="displayHidexId">
+                Loading...
+            </strong>
+        </div>
+
+    </div>
+
+    <button
+        onclick="location.href='profile.html'"
+        style="width:100%;margin-top:20px;background:#a31621;color:white;border:none;border-radius:10px;padding:14px;font-weight:bold;">
+        Edit Profile
+    </button>
+
+</div>
+
+<script>
+
+const user =
+JSON.parse(localStorage.getItem("hidexUser"));
+
+if(!user){
+
+location.href="index.html";
+
+}
+
+document.getElementById("displayUsername").textContent =
+user.username || "Unknown User";
+
+document.getElementById("displayEmail").textContent =
+user.email || "No Email";
+
+document.getElementById("displayHidexId").textContent =
+user.hidexId || "Unknown";
+
+if(user.profileImage){
+
+document.getElementById("displayProfileImg").src =
+user.profileImage;
+
+}
+
+document.getElementById("displayProfileImg").onerror=function(){
+
+this.src="images/default.png";
+
+};
+
+</script>
+    <script type="module" src="js/auth-guard.js"></script>
+
+
+</body>
+</html>

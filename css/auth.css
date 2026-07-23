@@ -1,0 +1,1110 @@
+/* ==================================================
+   HIDEX AUTH CSS
+   Production Edition
+   Part 1/4
+================================================== */
+
+/* ==========================
+   RESET
+========================== */
+
+*,
+*::before,
+*::after{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:20px;
+
+    overflow-x:hidden;
+
+    background:#FBF8F1;
+
+    color:#111111;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+}
+
+/* ==========================
+   VARIABLES
+========================== */
+
+:root{
+
+    --primary:#a31621;
+
+    --primary-dark:#82111a;
+
+    --cream:#FBF8F1;
+
+    --white:#FFFFFF;
+
+    --black:#111111;
+
+    --gray:#666666;
+
+    --border:#E8E1D9;
+
+    --success:#2ECC71;
+
+    --danger:#D63031;
+
+    --shadow:
+        0 10px 28px rgba(0,0,0,.08);
+
+    --radius:20px;
+
+    --transition:.25s ease;
+
+}
+
+/* ==========================
+   AUTH CONTAINER
+========================== */
+
+.auth-container{
+
+    width:100%;
+
+    max-width:390px;
+
+    background:var(--white);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    padding:34px 26px;
+
+    box-shadow:var(--shadow);
+
+    animation:authFade .35s ease;
+
+}
+
+/* ==========================
+   LOGO
+========================== */
+
+.auth-logo{
+
+    text-align:center;
+
+    font-size:34px;
+
+    font-weight:800;
+
+    color:var(--primary);
+
+    letter-spacing:.5px;
+
+    margin-bottom:6px;
+
+}
+
+/* ==========================
+   SUBTITLE
+========================== */
+
+.auth-container h2{
+
+    text-align:center;
+
+    color:var(--black);
+
+    font-size:18px;
+
+    font-weight:600;
+
+    margin-bottom:26px;
+
+}
+
+/* ==========================
+   INPUT GROUP
+========================== */
+
+.input-group{
+
+    width:100%;
+
+    margin-bottom:18px;
+
+    position:relative;
+
+}
+
+.input-group label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    color:var(--gray);
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+/* ==========================
+   ANIMATION
+========================== */
+
+@keyframes authFade{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            translateY(18px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:none;
+
+    }
+
+}
+
+/* ==================================================
+   HIDEX AUTH CSS
+   Production Edition
+   Part 2/4
+================================================== */
+
+
+/* ==========================
+   INPUT FIELDS
+========================== */
+
+.auth-container input,
+.auth-container textarea,
+.auth-container select{
+
+    width:100%;
+
+    padding:14px 16px;
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    background:var(--cream);
+
+    color:var(--black);
+
+    font-size:15px;
+
+    outline:none;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+
+}
+
+.auth-container input::placeholder{
+
+    color:#9A9A9A;
+
+}
+
+.auth-container input:focus,
+.auth-container textarea:focus,
+.auth-container select:focus{
+
+    border-color:var(--primary);
+
+    background:#FFFFFF;
+
+    box-shadow:
+        0 0 0 3px rgba(163,22,33,.12);
+
+}
+
+
+/* ==========================
+   PASSWORD FIELD
+========================== */
+
+.password-group{
+
+    position:relative;
+
+}
+
+.password-group input{
+
+    padding-right:52px;
+
+}
+
+.password-toggle{
+
+    position:absolute;
+
+    top:50%;
+
+    right:14px;
+
+    transform:translateY(-50%);
+
+    background:none;
+
+    border:none;
+
+    color:#777777;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+    padding:0;
+
+    width:28px;
+
+    height:28px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    transition:color .2s ease;
+
+}
+
+.password-toggle:hover{
+
+    color:var(--primary);
+
+}
+
+
+/* ==========================
+   PRIMARY BUTTON
+========================== */
+
+.auth-btn{
+
+    width:100%;
+
+    height:48px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:var(--primary);
+
+    color:#FFFFFF;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:
+        background .2s ease,
+        transform .15s ease,
+        box-shadow .2s ease;
+
+    box-shadow:
+        0 6px 16px rgba(163,22,33,.20);
+
+}
+
+.auth-btn:hover{
+
+    background:var(--primary-dark);
+
+}
+
+.auth-btn:active{
+
+    transform:scale(.98);
+
+}
+
+
+/* ==========================
+   DISABLED BUTTON
+========================== */
+
+.auth-btn:disabled{
+
+    background:#B7B7B7;
+
+    box-shadow:none;
+
+    cursor:not-allowed;
+
+}
+
+
+/* ==========================
+   LOADING BUTTON
+========================== */
+
+.auth-btn.loading{
+
+    pointer-events:none;
+
+    opacity:.9;
+
+}
+
+.auth-btn.loading::after{
+
+    content:"";
+
+    width:16px;
+
+    height:16px;
+
+    margin-left:10px;
+
+    display:inline-block;
+
+    border-radius:50%;
+
+    border:2px solid rgba(255,255,255,.4);
+
+    border-top-color:#FFFFFF;
+
+    animation:buttonSpin .7s linear infinite;
+
+    vertical-align:middle;
+
+}
+
+@keyframes buttonSpin{
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+
+/* ==========================
+   SECONDARY BUTTON
+========================== */
+
+.auth-btn.secondary{
+
+    background:#EFE9E2;
+
+    color:#111111;
+
+    box-shadow:none;
+
+}
+
+.auth-btn.secondary:hover{
+
+    background:#E2DBD4;
+
+}
+
+
+/* ==========================
+   INPUT VALIDATION
+========================== */
+
+.input-error{
+
+    border-color:#D63031 !important;
+
+}
+
+.input-success{
+
+    border-color:#2ECC71 !important;
+
+}
+
+
+/* ==========================
+   HELP TEXT
+========================== */
+
+.input-help{
+
+    margin-top:6px;
+
+    font-size:12px;
+
+    color:#777777;
+
+    line-height:1.4;
+
+}
+
+/* ==================================================
+   HIDEX AUTH CSS
+   Production Edition
+   Part 3/4
+================================================== */
+
+
+/* ==========================
+   ERROR MESSAGE
+========================== */
+
+.error-msg{
+
+    margin-top:12px;
+
+    padding:12px 14px;
+
+    border-radius:12px;
+
+    background:rgba(214,48,49,.08);
+
+    border:1px solid rgba(214,48,49,.18);
+
+    color:var(--danger);
+
+    font-size:13px;
+
+    text-align:center;
+
+    display:none;
+
+}
+
+.error-msg.show{
+
+    display:block;
+
+    animation:fadeMessage .25s ease;
+
+}
+
+
+/* ==========================
+   SUCCESS MESSAGE
+========================== */
+
+.success-msg{
+
+    margin-top:12px;
+
+    padding:12px 14px;
+
+    border-radius:12px;
+
+    background:rgba(46,204,113,.10);
+
+    border:1px solid rgba(46,204,113,.20);
+
+    color:var(--success);
+
+    font-size:13px;
+
+    text-align:center;
+
+    display:none;
+
+}
+
+.success-msg.show{
+
+    display:block;
+
+    animation:fadeMessage .25s ease;
+
+}
+
+
+/* ==========================
+   INFO MESSAGE
+========================== */
+
+.info-msg{
+
+    margin-top:12px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:#F8F5F0;
+
+    border:1px solid var(--border);
+
+    color:#666666;
+
+    font-size:13px;
+
+    text-align:center;
+
+}
+
+
+/* ==========================
+   AUTH SWITCH
+========================== */
+
+.auth-switch{
+
+    margin-top:22px;
+
+    text-align:center;
+
+    font-size:14px;
+
+    color:#666666;
+
+}
+
+.auth-switch a{
+
+    color:var(--primary);
+
+    font-weight:700;
+
+    text-decoration:none;
+
+    transition:color .2s ease;
+
+}
+
+.auth-switch a:hover{
+
+    color:var(--primary-dark);
+
+    text-decoration:underline;
+
+}
+
+
+/* ==========================
+   DIVIDER
+========================== */
+
+.auth-divider{
+
+    display:flex;
+
+    align-items:center;
+
+    margin:24px 0;
+
+    color:#999999;
+
+    font-size:13px;
+
+}
+
+.auth-divider::before,
+
+.auth-divider::after{
+
+    content:"";
+
+    flex:1;
+
+    height:1px;
+
+    background:var(--border);
+
+}
+
+.auth-divider span{
+
+    padding:0 12px;
+
+}
+
+
+/* ==========================
+   LOADING PANEL
+========================== */
+
+.auth-loading{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:25px;
+
+}
+
+.auth-spinner{
+
+    width:38px;
+
+    height:38px;
+
+    border-radius:50%;
+
+    border:4px solid rgba(0,0,0,.12);
+
+    border-top-color:var(--primary);
+
+    animation:authSpin .8s linear infinite;
+
+}
+
+.auth-loading p{
+
+    color:#666666;
+
+    font-size:14px;
+
+}
+
+@keyframes authSpin{
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+
+/* ==========================
+   FADE ANIMATION
+========================== */
+
+@keyframes fadeMessage{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(8px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:none;
+
+    }
+
+}
+
+
+/* ==========================
+   UTILITIES
+========================== */
+
+.hidden{
+
+    display:none !important;
+
+}
+
+.text-center{
+
+    text-align:center;
+
+}
+
+.mt-10{
+
+    margin-top:10px;
+
+}
+
+.mt-20{
+
+    margin-top:20px;
+
+}
+
+.mb-10{
+
+    margin-bottom:10px;
+
+}
+
+.mb-20{
+
+    margin-bottom:20px;
+
+}
+
+.w-100{
+
+    width:100%;
+
+}
+
+.rounded{
+
+    border-radius:14px;
+
+}
+
+.shadow{
+
+    box-shadow:var(--shadow);
+
+}
+
+/* ==================================================
+   HIDEX AUTH CSS
+   Production Edition
+   Part 4/4
+================================================== */
+
+
+/* ==========================
+   MOBILE OPTIMIZATION
+========================== */
+
+@media (max-width:600px){
+
+    body{
+
+        padding:18px;
+
+        align-items:flex-start;
+
+        padding-top:40px;
+
+    }
+
+    .auth-container{
+
+        max-width:100%;
+
+        padding:28px 20px;
+
+        border-radius:18px;
+
+    }
+
+    .auth-logo{
+
+        font-size:30px;
+
+    }
+
+    .auth-container h2{
+
+        font-size:17px;
+
+        margin-bottom:22px;
+
+    }
+
+    .auth-container input,
+    .auth-container textarea,
+    .auth-container select{
+
+        font-size:16px;
+
+        padding:13px 15px;
+
+    }
+
+    .auth-btn{
+
+        height:46px;
+
+        font-size:15px;
+
+    }
+
+}
+
+
+/* ==========================
+   SMALL SCREENS
+========================== */
+
+@media (max-width:360px){
+
+    body{
+
+        padding:12px;
+
+    }
+
+    .auth-container{
+
+        padding:22px 16px;
+
+    }
+
+    .auth-logo{
+
+        font-size:26px;
+
+    }
+
+}
+
+
+/* ==========================
+   DARK MODE
+========================== */
+
+@media (prefers-color-scheme:dark){
+
+    body{
+
+        background:#111111;
+
+        color:#FFFFFF;
+
+    }
+
+    .auth-container{
+
+        background:#1D1D1D;
+
+        border-color:#333333;
+
+    }
+
+    .auth-container h2{
+
+        color:#FFFFFF;
+
+    }
+
+    .input-group label{
+
+        color:#CCCCCC;
+
+    }
+
+    .auth-container input,
+    .auth-container textarea,
+    .auth-container select{
+
+        background:#2A2A2A;
+
+        border-color:#444444;
+
+        color:#FFFFFF;
+
+    }
+
+    .auth-container input::placeholder{
+
+        color:#999999;
+
+    }
+
+    .auth-divider{
+
+        color:#AAAAAA;
+
+    }
+
+    .auth-divider::before,
+    .auth-divider::after{
+
+        background:#444444;
+
+    }
+
+    .info-msg{
+
+        background:#252525;
+
+        border-color:#444444;
+
+        color:#DDDDDD;
+
+    }
+
+}
+
+
+/* ==========================
+   ACCESSIBILITY
+========================== */
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible{
+
+    outline:3px solid rgba(163,22,33,.35);
+
+    outline-offset:2px;
+
+}
+
+
+/* ==========================
+   SAFE AREA SUPPORT
+========================== */
+
+@supports (padding:max(0px)){
+
+    body{
+
+        padding-left:max(20px,env(safe-area-inset-left));
+
+        padding-right:max(20px,env(safe-area-inset-right));
+
+        padding-top:max(20px,env(safe-area-inset-top));
+
+        padding-bottom:max(20px,env(safe-area-inset-bottom));
+
+    }
+
+}
+
+
+/* ==========================
+   SMOOTH TRANSITIONS
+========================== */
+
+.auth-container,
+.auth-btn,
+.auth-container input,
+.auth-container textarea,
+.auth-container select,
+.password-toggle{
+
+    transition:
+
+        background .25s ease,
+
+        color .25s ease,
+
+        border-color .25s ease,
+
+        box-shadow .25s ease,
+
+        transform .2s ease;
+
+}
+
+
+/* ==========================
+   SELECTION
+========================== */
+
+::selection{
+
+    background:#a31621;
+
+    color:#FFFFFF;
+
+}
+
+
+/* ==========================
+   SCROLLBAR
+========================== */
+
+::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#F3EEE7;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#a31621;
+
+    border-radius:20px;
+
+}
+
+*{
+
+    scrollbar-width:thin;
+
+    scrollbar-color:#a31621 #F3EEE7;
+
+}
+
+
+/* ==========================
+   FINAL UTILITIES
+========================== */
+
+.hidden{
+
+    display:none !important;
+
+}
+
+.disabled{
+
+    opacity:.6;
+
+    pointer-events:none;
+
+}
+
+.no-select{
+
+    user-select:none;
+
+}
+
+.fade-in{
+
+    animation:authFade .35s ease;
+
+}
+
+
+/* ==========================
+   END OF AUTH.CSS
+========================== */

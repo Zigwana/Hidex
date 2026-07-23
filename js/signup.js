@@ -1,350 +1,278 @@
-// Hidex Signup
+// =====================================================
+// Hidex Signup.js
+// Stable Version
+// =====================================================
 
-
-import {auth, db} from "./firebase.js";
-
+import { auth, db } from "./firebase.js";
 
 import {
-
-createUserWithEmailAndPassword
-
+    createUserWithEmailAndPassword
 }
-
 from
-
 "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-
 import {
-
-doc,
-setDoc
-
+    doc,
+    setDoc,
+    serverTimestamp
 }
-
 from
-
 "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
-
-
-
-
-
+// =====================================================
+// Elements
+// =====================================================
 
 const signupBtn =
-
 document.getElementById("signupBtn");
 
-
-
-
-
-
-
-signupBtn.onclick = async()=>{
-
-
-
 const usernameInput =
-
 document.getElementById("username");
 
-
-
 const emailInput =
-
 document.getElementById("email");
 
-
-
 const passwordInput =
-
 document.getElementById("password");
 
-
-
 const message =
-
 document.getElementById("message");
 
 
-
-
-
-
-
-
-let username =
-
-usernameInput.value.trim();
-
-
-
-let email =
-
-emailInput.value.trim();
-
-
-
-let password =
-
-passwordInput.value;
-
-
-
-
-
-
-
-
-if(
-
-username === "" ||
-
-email === "" ||
-
-password === ""
-
-){
-
-
-
-message.innerHTML =
-
-"Fill all fields";
-
-
-
-return;
-
-
-}
-
-
-
-
-
-
-
-// Loading state
-
-
-signupBtn.disabled = true;
-
-
-signupBtn.innerHTML =
-
-"Creating account...";
-
-
-message.innerHTML="";
-
-
-
-
-
-
-
-
-
-try{
-
-
-
-// Create Firebase account
-
-
-let result =
-
-await createUserWithEmailAndPassword(
-
-auth,
-
-email,
-
-password
-
-);
-
-
-
-
-
-
-
-let uid =
-
-result.user.uid;
-
-
-
-
-
-
-
-
-
+// =====================================================
 // Generate Hidex ID
+// =====================================================
 
+function generateHidexId(){
 
-let hidexId =
+    return "HX" +
 
-"HX" +
-
-Math.floor(
-
-100000 +
-
-Math.random()*900000
-
-);
-
-
-
-
-
-
-
-
-// Save user profile
-
-
-await setDoc(
-
-doc(
-
-db,
-
-"users",
-
-uid
-
-),
-
-{
-
-
-uid:uid,
-
-
-username:username,
-
-
-email:email,
-
-
-hidexId:hidexId,
-
-
-profileImage:"",
-
-
-online:true,
-
-
-lastSeen:new Date()
-
-
+    Math.floor(
+        100000 +
+        Math.random()*900000
+    );
 
 }
 
-);
 
+// =====================================================
+// Signup
+// =====================================================
 
+async function signup(){
 
+    if(signupBtn.disabled){
+        return;
+    }
 
+    const username =
+    usernameInput.value.trim();
 
+    const email =
+    emailInput.value.trim().toLowerCase();
 
+    const password =
+    passwordInput.value;
 
+    if(
+        username==="" ||
+        email==="" ||
+        password===""
 
+    ){
 
-// Save session
+        message.textContent =
+        "Please fill in all fields.";
 
+        return;
 
-localStorage.setItem(
+    }
 
-"hidexUser",
+    signupBtn.disabled=true;
+    signupBtn.textContent="Creating account...";
+    message.textContent="";
 
-JSON.stringify({
+    try{
 
-uid:uid,
+        // --------------------------
+        // Create Firebase Account
+        // --------------------------
 
-username:username,
+        const credential =
+        await createUserWithEmailAndPassword(
 
-email:email,
+            auth,
+            email,
+            password
 
-hidexId:hidexId,
+        );
 
-profileImage:""
+        const uid =
+        credential.user.uid;
 
-})
+        // --------------------------
+        // User Data
+        // --------------------------
 
-);
+        const userData={
 
+            uid:uid,
 
+            username:username,
 
+            email:email,
 
+            hidexId:generateHidexId(),
 
+            profileImage:"",
 
+            role:"user",
 
+            online:true,
 
-location.href="home.html";
+            lastSeen:serverTimestamp()
 
+        };
 
+        // --------------------------
+        // Save Firestore Profile
+        // --------------------------
 
+        await setDoc(
 
+            doc(db,"users",uid),
 
+            userData
 
+        );
+
+        // --------------------------
+        // Save Session
+        // --------------------------
+
+        localStorage.setItem(
+
+            "hidexUser",
+
+            JSON.stringify({
+
+                uid:userData.uid,
+
+                username:userData.username,
+
+                email:userData.email,
+
+                hidexId:userData.hidexId,
+
+                profileImage:userData.profileImage,
+
+                role:userData.role
+
+            })
+
+        );
+
+        message.textContent=
+        "Account created successfully.";
+
+        // Small delay ensures Firestore sync
+        await new Promise(resolve=>setTimeout(resolve,300));
+
+        location.href="home.html";
+
+    }
+
+    catch(error){
+
+        console.error("Signup Error:",error);
+
+        switch(error.code){
+
+            case "auth/email-already-in-use":
+
+                message.textContent=
+                "This email is already registered.";
+                break;
+
+            case "auth/invalid-email":
+
+                message.textContent=
+                "Invalid email address.";
+                break;
+
+            case "auth/weak-password":
+
+                message.textContent=
+                "Password must be at least 6 characters.";
+                break;
+
+            case "auth/network-request-failed":
+
+                message.textContent=
+                "Check your internet connection.";
+                break;
+
+            default:
+
+                message.textContent=
+                error.message;
+
+        }
+
+        passwordInput.value="";
+
+    }
+
+    finally{
+
+        signupBtn.disabled=false;
+        signupBtn.textContent="Sign Up";
+
+    }
 
 }
 
-catch(error){
 
+// =====================================================
+// Events
+// =====================================================
 
+if(signupBtn){
 
-message.innerHTML =
-
-error.message;
-
-
-
-
-
-// Clear entered data
-
-
-usernameInput.value="";
-
-emailInput.value="";
-
-passwordInput.value="";
-
-
-
-
+    signupBtn.onclick=signup;
 
 }
 
+[
+    usernameInput,
+    emailInput,
+    passwordInput
+].forEach(input=>{
+
+    input.addEventListener(
+
+        "keydown",
+
+        (event)=>{
+
+            if(event.key==="Enter"){
+
+                event.preventDefault();
+
+                signup();
+
+            }
+
+        }
+
+    );
+
+});
 
 
+// =====================================================
+// Ready
+// =====================================================
 
-
-
-finally{
-
-
-
-signupBtn.disabled=false;
-
-
-signupBtn.innerHTML="Sign Up";
-
-
-
-}
-
-
-
-};
+console.log("Hidex Signup Ready");

@@ -1,372 +1,514 @@
-import {db} from "./firebase.js";
+// =====================================================
+// Hidex Users.js
+// Part 1 - Authentication & Initialization
+// =====================================================
 
+import { auth, db } from "./firebase.js";
 
 import {
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-collection,
-getDocs
+import {
+    collection,
+    query,
+    orderBy,
+    onSnapshot,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-}
 
-from
+// =====================================================
+// Variables
+// =====================================================
 
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+let currentUser = null;
 
+let allUsers = [];
 
+let unsubscribeUsers = null;
 
 
+// =====================================================
+// Elements
+// =====================================================
 
-let currentUser =
+const userList = document.getElementById("userList");
 
-JSON.parse(
+const searchBox = document.getElementById("search");
 
-localStorage.getItem("hidexUser")
 
-);
+// =====================================================
+// Wait For Authentication
+// =====================================================
 
+onAuthStateChanged(auth, async(firebaseUser)=>{
 
+    if(!firebaseUser){
 
+        localStorage.clear();
 
+        location.href = "index.html";
 
-if(!currentUser){
+        return;
 
-location.href="index.html";
+    }
 
-}
+    try{
 
+        const userSnap = await getDoc(
 
+            doc(
+                db,
+                "users",
+                firebaseUser.uid
+            )
 
+        );
 
+        if(!userSnap.exists()){
 
+            alert("User profile not found.");
 
-const userList =
+            location.href = "index.html";
 
-document.getElementById("userList");
+            return;
 
+        }
 
-const searchBox =
+        currentUser = userSnap.data();
 
-document.getElementById("search");
+        localStorage.setItem(
 
+            "hidexUser",
 
+            JSON.stringify(currentUser)
 
-let allUsers=[];
+        );
 
+        initializeUsers();
 
+    }
 
+    catch(error){
 
+        console.error(
+            "Initialization failed:",
+            error
+        );
 
+        userList.innerHTML = `
 
+            <div class="user-card">
 
+                <h3>
 
-async function loadUsers(){
+                    Unable to load users
 
+                </h3>
 
+            </div>
 
-let snapshot =
+        `;
 
-await getDocs(
-
-collection(
-
-db,
-
-"users"
-
-)
-
-);
-
-
-
-
-
-
-allUsers=[];
-
-
-
-
-
-snapshot.forEach((doc)=>{
-
-
-let user = doc.data();
-
-
-
-if(user.uid !== currentUser.uid){
-
-
-allUsers.push(user);
-
-
-}
-
-
+    }
 
 });
 
 
+// =====================================================
+// Initialize
+// =====================================================
 
+function initializeUsers(){
 
-
-
-displayUsers(allUsers);
-
-
+    loadUsers();
 
 }
 
 
+// =====================================================
+// Load Users
+// =====================================================
+
+function loadUsers(){
+
+    if(!userList){
+        return;
+    }
+
+    if(unsubscribeUsers){
+
+        unsubscribeUsers();
+
+        unsubscribeUsers = null;
+
+    }
+
+    userList.innerHTML = `
+
+        <div class="user-card">
+
+            <h3>
+
+                Loading users...
+
+            </h3>
+
+        </div>
+
+    `;
+
+    const usersQuery = query(
+
+        collection(
+            db,
+            "users"
+        ),
+
+        orderBy(
+            "username"
+        )
+
+    );
+
+    unsubscribeUsers = onSnapshot(
+
+        usersQuery,
+
+        (snapshot)=>{
+
+            allUsers = [];
+
+            snapshot.forEach((userDoc)=>{
+
+                const user = userDoc.data();
+
+                if(user.uid !== currentUser.uid){
+
+                    allUsers.push(user);
+
+                }
+
+            });
+
+            displayUsers(allUsers);
+
+        },
+
+        (error)=>{
+
+            console.error(
+                "Users listener failed:",
+                error
+            );
+
+            userList.innerHTML = `
+
+                <div class="user-card">
+
+                    <h3>
+
+                        Unable to load users
+
+                    </h3>
+
+                    <p>
+
+                        ${error.message}
+
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    );
+
+}
+
+// =====================================================
+// Part 2 - Display, Search & Chat
+// =====================================================
 
 
-
-
-
-
+// ------------------------------
+// Display Users
+// ------------------------------
 
 function displayUsers(users){
 
+    if(!userList){
+        return;
+    }
 
+    if(users.length === 0){
 
-userList.innerHTML="";
+        userList.innerHTML = `
 
+            <div class="user-card">
 
+                <h3>No users found</h3>
 
+            </div>
 
+        `;
 
+        return;
 
-users.forEach((user)=>{
+    }
 
+    let html = "";
 
+    users.forEach((user)=>{
 
-let lastSeen="";
+        let lastSeen = "";
 
+        if(!user.online && user.lastSeen){
 
+            try{
 
+                lastSeen =
+                "Last seen: " +
+                user.lastSeen
+                .toDate()
+                .toLocaleString();
 
+            }catch(e){
 
-if(!user.online && user.lastSeen){
+                lastSeen = "";
 
+            }
 
-let date =
+        }
 
-user.lastSeen.toDate();
+        html += `
 
+            <div class="user-card">
 
+                <img
 
-lastSeen =
+                    src="${user.profileImage || "images/default.png"}"
 
-"Last seen: " +
+                    class="user-image"
 
-date.toLocaleString();
+                    onerror="this.src='images/default.png'"
 
+                >
 
+                <h3>
+
+                    ${user.username || "Unknown User"}
+
+                </h3>
+
+                <p>
+
+                    ${user.hidexId || ""}
+
+                </p>
+
+                <p>
+
+                    ${user.online ? "🟢 Online" : "⚪ Offline"}
+
+                </p>
+
+                <p>
+
+                    ${lastSeen}
+
+                </p>
+
+                <button
+
+                    class="message-user"
+
+                    data-id="${user.uid}"
+
+                    data-name="${user.username}"
+
+                >
+
+                    Message
+
+                </button>
+
+            </div>
+
+        `;
+
+    });
+
+    userList.innerHTML = html;
+
+    attachButtons();
 
 }
 
 
 
+// ------------------------------
+// Message Buttons
+// ------------------------------
 
+function attachButtons(){
 
+    document
 
+    .querySelectorAll(".message-user")
 
-userList.innerHTML += `
+    .forEach((button)=>{
 
+        button.onclick = ()=>{
 
+            localStorage.setItem(
 
-<div class="user-card">
+                "chatFriendId",
 
+                button.dataset.id
 
+            );
 
-<img
+            localStorage.setItem(
 
-src="${user.profileImage || 'images/default.png'}"
+                "chatFriend",
 
-class="user-image"
+                button.dataset.name
 
->
+            );
 
+            location.href="chat.html";
 
+        };
 
-
-<h3>
-
-${user.username}
-
-</h3>
-
-
-
-<p>
-
-${user.hidexId}
-
-</p>
-
-
-
-
-<p>
-
-${user.online ? "🟢 Online" : "⚪ Offline"}
-
-</p>
-
-
-
-<p>
-
-${lastSeen}
-
-</p>
-
-
-
-
-
-<button onclick="openChat(
-
-'${user.uid}',
-
-'${user.username}'
-
-)">
-
-Message
-
-</button>
-
-
-
-</div>
-
-
-
-`;
-
-
-
-});
-
-
-
-
-
-if(users.length===0){
-
-
-userList.innerHTML =
-"No users found";
-
+    });
 
 }
 
 
 
+// ------------------------------
+// Search
+// ------------------------------
+
+if(searchBox){
+
+    searchBox.addEventListener(
+
+        "input",
+
+        ()=>{
+
+            const text =
+
+            searchBox.value
+
+            .trim()
+
+            .toLowerCase();
+
+            if(text === ""){
+
+                displayUsers(allUsers);
+
+                return;
+
+            }
+
+            const filtered =
+
+            allUsers.filter((user)=>{
+
+                return (
+
+                    (user.username || "")
+
+                    .toLowerCase()
+
+                    .includes(text)
+
+                    ||
+
+                    (user.hidexId || "")
+
+                    .toLowerCase()
+
+                    .includes(text)
+
+                );
+
+            });
+
+            displayUsers(filtered);
+
+        }
+
+    );
+
 }
 
 
 
+// ------------------------------
+// Cleanup
+// ------------------------------
 
+window.addEventListener(
 
+    "beforeunload",
 
+    ()=>{
 
+        if(unsubscribeUsers){
 
-searchBox.oninput = ()=>{
+            unsubscribeUsers();
 
+        }
 
-
-let text =
-
-searchBox.value
-
-.toLowerCase()
-
-.trim();
-
-
-
-
-
-
-let filtered =
-
-allUsers.filter(user=>
-
-
-user.username
-
-.toLowerCase()
-
-.includes(text)
-
-
-
-||
-
-
-
-user.hidexId
-
-.toLowerCase()
-
-.includes(text)
-
-
+    }
 
 );
 
 
 
+// ------------------------------
+// Manual Refresh
+// ------------------------------
 
+window.refreshUsers = ()=>{
 
-displayUsers(filtered);
-
-
+    loadUsers();
 
 };
 
 
 
+// ------------------------------
+// Session Check
+// ------------------------------
 
+window.checkUsersSession = ()=>{
 
+    if(!auth.currentUser){
 
-loadUsers();
+        location.href="index.html";
 
+        return false;
 
+    }
 
-
-
-
-
-window.openChat=function(id,name){
-
-
-
-localStorage.setItem(
-
-"chatFriendId",
-
-id
-
-);
-
-
-
-localStorage.setItem(
-
-"chatFriend",
-
-name
-
-);
-
-
-
-
-location.href="chat.html";
-
+    return true;
 
 };
+
+
+
+// ------------------------------
+// Ready
+// ------------------------------
+
+console.log("Hidex Users Ready");

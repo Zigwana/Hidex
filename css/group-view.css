@@ -1,0 +1,1258 @@
+/* ==================================================
+   HIDEX GROUP VIEW CSS
+   PART 1/5
+   Global Layout & Header
+================================================== */
+
+
+/* ==========================
+   RESET
+========================== */
+
+*,
+*::before,
+*::after{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+
+    width:100%;
+    height:100%;
+
+    font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+    background:#FBF8F1;
+
+    color:#111;
+
+    overflow:hidden;
+
+}
+
+
+/* ==========================
+   OVERLAY
+========================== */
+
+.group-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    display:none;
+
+    flex-direction:column;
+
+    background:#FBF8F1;
+
+    z-index:99999;
+
+}
+
+
+/* ==========================
+   WINDOW
+========================== */
+
+.group-window{
+
+    width:100%;
+
+    height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+}
+
+
+/* ==========================
+   HEADER
+========================== */
+
+.group-header{
+
+    height:72px;
+
+    flex-shrink:0;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:0 16px;
+
+    background:#a31621;
+
+    color:#fff;
+
+    box-shadow:
+
+    0 2px 8px
+
+    rgba(0,0,0,.15);
+
+}
+
+
+/* ==========================
+   BACK BUTTON
+========================== */
+
+.group-header button{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:transparent;
+
+    color:white;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.group-header button:hover{
+
+    background:
+
+    rgba(255,255,255,.15);
+
+}
+
+
+/* ==========================
+   GROUP AVATAR
+========================== */
+
+.group-avatar{
+
+    width:50px;
+
+    height:50px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:2px solid white;
+
+    flex-shrink:0;
+
+}
+
+
+/* ==========================
+   TITLE
+========================== */
+
+.group-title{
+
+    flex:1;
+
+    overflow:hidden;
+
+}
+
+.group-title h2{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+.group-title small{
+
+    display:block;
+
+    margin-top:4px;
+
+    font-size:13px;
+
+    color:
+
+    rgba(255,255,255,.85);
+
+}
+
+
+/* ==========================
+   BODY
+========================== */
+
+.group-body{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+    min-height:0;
+
+}
+
+/* ==================================================
+   HIDEX GROUP VIEW CSS
+   PART 2/5
+   Group Information & Members
+================================================== */
+
+
+/* ==========================
+   GROUP INFO CARD
+========================== */
+
+.group-info{
+
+    background:#FFFFFF;
+
+    border-bottom:1px solid #e6e6e6;
+
+    padding:16px;
+
+    flex-shrink:0;
+
+}
+
+
+/* ==========================
+   DESCRIPTION
+========================== */
+
+.group-info p{
+
+    color:#555;
+
+    font-size:14px;
+
+    line-height:1.5;
+
+    margin-bottom:14px;
+
+}
+
+
+/* ==========================
+   MEMBERS BUTTON
+========================== */
+
+#toggleMembers{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#f5f5f5;
+
+    color:#111;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    text-align:left;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+#toggleMembers:hover{
+
+    background:#ededed;
+
+}
+
+
+/* ==========================
+   MEMBERS LIST
+========================== */
+
+#members{
+
+    display:none;
+
+    margin-top:12px;
+
+    max-height:220px;
+
+    overflow-y:auto;
+
+    border-radius:12px;
+
+    background:#fafafa;
+
+    border:1px solid #e6e6e6;
+
+}
+
+
+/* ==========================
+   MEMBER ROW
+========================== */
+
+.member{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:12px 15px;
+
+    border-bottom:1px solid #ececec;
+
+}
+
+.member:last-child{
+
+    border-bottom:none;
+
+}
+
+
+/* ==========================
+   MEMBER IMAGE
+========================== */
+
+.member img{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:2px solid #a31621;
+
+}
+
+
+/* ==========================
+   MEMBER DETAILS
+========================== */
+
+.member-info{
+
+    flex:1;
+
+    overflow:hidden;
+
+}
+
+.member-name{
+
+    font-size:15px;
+
+    font-weight:700;
+
+    color:#111;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+.member-role{
+
+    margin-top:2px;
+
+    font-size:12px;
+
+    color:#777;
+
+}
+
+
+/* ==========================
+   CHAT AREA
+========================== */
+
+#chat{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:0;
+
+    overflow:hidden;
+
+    background:#efeae2;
+
+}
+
+
+/* ==========================
+   MESSAGES
+========================== */
+
+#groupMessages{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:16px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    min-height:0;
+
+}
+
+/* ==================================================
+   HIDEX GROUP VIEW CSS
+   PART 3/5
+   Modern Message Bubbles
+================================================== */
+
+
+/* ==========================
+   MESSAGE ROW
+========================== */
+
+.message{
+
+    max-width:78%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+
+    padding:10px 14px;
+
+    border-radius:18px;
+
+    word-break:break-word;
+
+    animation:fadeIn .25s ease;
+
+}
+
+
+/* ==========================
+   RECEIVED MESSAGE
+========================== */
+
+.received{
+
+    align-self:flex-start;
+
+    background:#FFFFFF;
+
+    border:1px solid #e3e3e3;
+
+    border-top-left-radius:6px;
+
+    box-shadow:
+
+    0 2px 6px
+
+    rgba(0,0,0,.06);
+
+}
+
+
+/* ==========================
+   SENT MESSAGE
+========================== */
+
+.sent{
+
+    align-self:flex-end;
+
+    background:#a31621;
+
+    color:#FFFFFF;
+
+    border-top-right-radius:6px;
+
+    box-shadow:
+
+    0 2px 8px
+
+    rgba(0,0,0,.10);
+
+}
+
+
+/* ==========================
+   SENDER NAME
+========================== */
+
+.message b{
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+.received b{
+
+    color:#a31621;
+
+}
+
+.sent b{
+
+    color:#ffe8ea;
+
+}
+
+
+/* ==========================
+   MESSAGE TEXT
+========================== */
+
+.message p{
+
+    margin:0;
+
+    font-size:15px;
+
+    line-height:1.5;
+
+    white-space:pre-wrap;
+
+    word-break:break-word;
+
+}
+
+.sent p{
+
+    color:#FFFFFF;
+
+}
+
+.received p{
+
+    color:#222;
+
+}
+
+
+/* ==========================
+   TIME
+========================== */
+
+.message small{
+
+    align-self:flex-end;
+
+    font-size:11px;
+
+    opacity:.75;
+
+}
+
+.sent small{
+
+    color:#ffe5e7;
+
+}
+
+.received small{
+
+    color:#777;
+
+}
+
+
+/* ==========================
+   EMPTY CHAT
+========================== */
+
+.empty-chat{
+
+    margin:auto;
+
+    text-align:center;
+
+    color:#777;
+
+    padding:30px;
+
+}
+
+.empty-chat h3{
+
+    color:#a31621;
+
+    margin-bottom:8px;
+
+}
+
+
+/* ==========================
+   LOADING
+========================== */
+
+.chat-loading{
+
+    margin:auto;
+
+    color:#777;
+
+    font-size:15px;
+
+}
+
+
+/* ==========================
+   ANIMATION
+========================== */
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(10px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ==================================================
+   HIDEX GROUP VIEW CSS
+   PART 4/5
+   Message Input Bar
+================================================== */
+
+
+/* ==========================
+   INPUT CONTAINER
+========================== */
+
+.message-bar{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:12px 14px;
+
+    background:#FFFFFF;
+
+    border-top:1px solid #dddddd;
+
+    flex-shrink:0;
+
+}
+
+
+/* ==========================
+   MESSAGE INPUT
+========================== */
+
+#messageText{
+
+    flex:1;
+
+    height:48px;
+
+    padding:0 18px;
+
+    border:1px solid #dddddd;
+
+    border-radius:30px;
+
+    background:#f8f8f8;
+
+    color:#111111;
+
+    font-size:15px;
+
+    outline:none;
+
+    transition:.2s;
+
+}
+
+#messageText:focus{
+
+    border-color:#a31621;
+
+    background:#FFFFFF;
+
+}
+
+
+/* ==========================
+   SEND BUTTON
+========================== */
+
+#sendMessage{
+
+    width:56px;
+
+    height:48px;
+
+    border:none;
+
+    border-radius:24px;
+
+    background:#a31621;
+
+    color:#FFFFFF;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+#sendMessage:hover{
+
+    background:#8d111c;
+
+}
+
+#sendMessage:active{
+
+    transform:scale(.96);
+
+}
+
+#sendMessage:disabled{
+
+    opacity:.5;
+
+    cursor:not-allowed;
+
+}
+
+
+/* ==========================
+   INPUT PLACEHOLDER
+========================== */
+
+#messageText::placeholder{
+
+    color:#888888;
+
+}
+
+
+/* ==========================
+   SCROLLBAR
+========================== */
+
+#groupMessages::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+#groupMessages::-webkit-scrollbar-thumb{
+
+    background:#c7c7c7;
+
+    border-radius:10px;
+
+}
+
+#groupMessages::-webkit-scrollbar-track{
+
+    background:transparent;
+
+}
+
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media(max-width:600px){
+
+    .message-bar{
+
+        padding:10px;
+
+        gap:10px;
+
+    }
+
+    #messageText{
+
+        height:46px;
+
+        font-size:14px;
+
+    }
+
+    #sendMessage{
+
+        width:52px;
+
+        height:46px;
+
+    }
+
+}
+
+/* ==================================================
+   HIDEX GROUP VIEW CSS
+   PART 5/5
+   Final Polish
+================================================== */
+
+
+/* ==========================
+   BUTTON ANIMATIONS
+========================== */
+
+button{
+
+    transition:
+    background .25s,
+    color .25s,
+    transform .15s,
+    box-shadow .25s;
+
+}
+
+button:hover{
+
+    box-shadow:
+    0 4px 12px
+    rgba(0,0,0,.12);
+
+}
+
+button:active{
+
+    transform:scale(.97);
+
+}
+
+
+/* ==========================
+   CHAT BACKGROUND
+========================== */
+
+#chat{
+
+    background:
+
+    linear-gradient(
+
+        180deg,
+
+        #FBF8F1 0%,
+
+        #F5F1EA 100%
+
+    );
+
+}
+
+
+/* ==========================
+   MEMBER SCROLLBAR
+========================== */
+
+#members::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+#members::-webkit-scrollbar-thumb{
+
+    background:#a31621;
+
+    border-radius:10px;
+
+}
+
+
+/* ==========================
+   MESSAGE HOVER
+========================== */
+
+.message{
+
+    transition:
+
+    transform .15s,
+
+    box-shadow .2s;
+
+}
+
+.message:hover{
+
+    transform:translateY(-1px);
+
+    box-shadow:
+
+    0 4px 12px
+
+    rgba(0,0,0,.08);
+
+}
+
+
+/* ==========================
+   HEADER SHADOW
+========================== */
+
+.group-header{
+
+    position:relative;
+
+    z-index:10;
+
+}
+
+
+/* ==========================
+   SAFE AREA
+========================== */
+
+@supports(padding:max(0px)){
+
+.message-bar{
+
+padding-bottom:
+
+max(
+
+12px,
+
+env(safe-area-inset-bottom)
+
+);
+
+}
+
+}
+
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media(max-width:768px){
+
+.group-header{
+
+height:66px;
+
+padding:0 12px;
+
+}
+
+.group-avatar{
+
+width:46px;
+
+height:46px;
+
+}
+
+.group-title h2{
+
+font-size:17px;
+
+}
+
+.group-title small{
+
+font-size:12px;
+
+}
+
+.message{
+
+max-width:88%;
+
+}
+
+}
+
+
+@media(max-width:480px){
+
+.group-info{
+
+padding:14px;
+
+}
+
+#toggleMembers{
+
+padding:12px;
+
+font-size:14px;
+
+}
+
+.member{
+
+padding:10px 12px;
+
+}
+
+.member img{
+
+width:38px;
+
+height:38px;
+
+}
+
+.member-name{
+
+font-size:14px;
+
+}
+
+.message{
+
+padding:10px 12px;
+
+}
+
+.message p{
+
+font-size:14px;
+
+}
+
+.message-bar{
+
+padding:8px;
+
+}
+
+#messageText{
+
+height:44px;
+
+}
+
+#sendMessage{
+
+width:48px;
+
+height:44px;
+
+font-size:14px;
+
+}
+
+}
+
+
+/* ==========================
+   DARK MODE
+========================== */
+
+@media(prefers-color-scheme:dark){
+
+.group-overlay{
+
+background:#111;
+
+}
+
+.group-info{
+
+background:#1d1d1d;
+
+border-color:#333;
+
+}
+
+#members{
+
+background:#1b1b1b;
+
+border-color:#333;
+
+}
+
+.member{
+
+border-color:#333;
+
+}
+
+.member-name{
+
+color:white;
+
+}
+
+.member-role{
+
+color:#aaa;
+
+}
+
+#chat{
+
+background:#151515;
+
+}
+
+.received{
+
+background:#222;
+
+border-color:#333;
+
+}
+
+.received p{
+
+color:white;
+
+}
+
+.message-bar{
+
+background:#1d1d1d;
+
+border-color:#333;
+
+}
+
+#messageText{
+
+background:#2a2a2a;
+
+border-color:#444;
+
+color:white;
+
+}
+
+}
+
+
+/* ==========================
+   UTILITIES
+========================== */
+
+.hidden{
+
+display:none!important;
+
+}
+
+.text-center{
+
+text-align:center;
+
+}
+
+.w-100{
+
+width:100%;
+
+}
+
+.flex{
+
+display:flex;
+
+}
+
+.flex-column{
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+
+/* ==========================
+   PERFORMANCE
+========================== */
+
+.message,
+
+.member,
+
+button{
+
+will-change:transform;
+
+}
+
+
+/* ==========================
+   END
+========================== */

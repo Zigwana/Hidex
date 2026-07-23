@@ -1,606 +1,419 @@
-/* HIDEX BRAND COLORS */
+/* ==========================================
+   HIDEX MAIN APPLICATION STYLESHEET
+   Palette: #a31621 (Crimson), #111111 (Dark), #f8f9fa (Light)
+   ========================================== */
 
-:root{
+:root {
+    --primary-red: #a31621;
+    --primary-red-hover: #82111a;
+    --bg-dark: #111111;
+    --bg-card: #1c1c1c;
+    --surface-light: #f8f9fa;
+    --text-main: #f8f9fa;
+    --text-muted: #a0a0a0;
+    --border-subtle: #2a2a2a;
+}
 
---primary:#a31621;
---light:#f8f9fa;
---dark:#111111;
---white:#ffffff;
---gray:#666;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+/* App View Containers (SPA Layout) */
+.app-view {
+    display: none;
+    width: 100%;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+.app-view.active {
+    display: block;
+}
+
+/* Navigation Bar */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+}
+
+.bottom-nav button, 
+.bottom-nav a {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.bottom-nav button.active, 
+.bottom-nav a.active {
+    color: var(--primary-red);
+}
+
+.bottom-nav button:hover, 
+.bottom-nav a:hover {
+    color: var(--surface-light);
+}
+
+/* Chat Window & Bubbles */
+.chat-window {
+    background-color: var(--bg-dark);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.message-bubble {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+    margin-bottom: 8px;
+}
+
+.message-bubble.incoming {
+    background-color: var(--bg-card);
+    color: var(--surface-light);
+    border-top-left-radius: 2px;
+}
+
+.message-bubble.outgoing {
+    background-color: var(--primary-red);
+    color: var(--surface-light);
+    align-self: flex-end;
+    border-top-right-radius: 2px;
+}
+
+/* Chat Input Bar */
+.chat-input-container {
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-subtle);
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-input-container input[type="text"] {
+    flex: 1;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 10px 16px;
+    color: var(--surface-light);
+    outline: none;
+}
+
+.chat-input-container input[type="text"]:focus {
+    border-color: var(--primary-red);
+}
+
+.chat-input-container button {
+    background-color: var(--primary-red);
+    color: var(--surface-light);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.chat-input-container button:hover {
+    background-color: var(--primary-red-hover);
+}
+
+/* Buttons and Form Elements */
+.btn-primary {
+    background-color: var(--primary-red);
+    color: var(--surface-light);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-weight: 600;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-red-hover);
+}
+
+/* Notification Badges */
+.badge-unread {
+    background-color: var(--primary-red);
+    color: var(--surface-light);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
 }
 
 
+/* ==========================================
+   Cards
+========================================== */
 
+.user-card{
+    background:var(--bg-card);
+    border:1px solid var(--border-subtle);
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:15px;
+}
 
-/* GLOBAL */
+.user-card h2,
+.user-card h3,
+.user-card h4{
+    margin-bottom:8px;
+}
 
-*{
-
-box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
-
+.user-card p{
+    color:var(--text-muted);
+    margin:4px 0;
 }
 
 
+/* ==========================================
+   User Images
+========================================== */
 
-body{
-
-margin:0;
-
-background:linear-gradient(
-135deg,
-#f8f9fa,
-#eeeeee
-);
-
-color:var(--dark);
-
-min-height:100vh;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-padding:15px;
-
+.user-image{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--primary-red);
+    display:block;
+    margin:0 auto 12px;
 }
 
 
+/* ==========================================
+   Chat Messages
+========================================== */
 
+.message{
+    display:flex;
+    flex-direction:column;
+    margin-bottom:12px;
+}
 
-/* MAIN APP CONTAINER */
+.message.sent{
+    align-items:flex-end;
+}
 
-.box{
+.message.received{
+    align-items:flex-start;
+}
 
-background:white;
+.message-text{
+    max-width:80%;
+    padding:12px 14px;
+    border-radius:15px;
+    word-break:break-word;
+}
 
-width:100%;
+.sent .message-text{
+    background:var(--primary-red);
+    color:white;
+}
 
-max-width:430px;
+.received .message-text{
+    background:var(--bg-card);
+    color:white;
+}
 
-padding:25px;
+.message-footer{
+    display:flex;
+    gap:8px;
+    margin-top:4px;
+    font-size:12px;
+    color:var(--text-muted);
+}
 
-border-radius:25px;
-
-box-shadow:
-0 15px 40px rgba(0,0,0,.15);
-
+.message-time{
+    opacity:.8;
 }
 
 
+/* ==========================================
+   Message Menu
+========================================== */
 
-
-/* HEADINGS */
-
-
-h1{
-
-color:var(--primary);
-
-font-size:38px;
-
-text-align:center;
-
-margin:5px;
-
+.message-menu{
+    background:none;
+    border:none;
+    color:var(--text-muted);
+    cursor:pointer;
+    font-size:18px;
 }
 
 
+/* ==========================================
+   Buttons
+========================================== */
 
-h2{
+.group-btn,
+.reply-btn{
+    margin-top:12px;
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:var(--primary-red);
+    color:white;
+    cursor:pointer;
+    font-weight:600;
+}
 
-margin-top:10px;
-
+.group-btn:hover,
+.reply-btn:hover{
+    background:var(--primary-red-hover);
 }
 
 
-
-h3{
-
-margin-top:20px;
-
-}
-
-
-
-
-
-/* PROFILE */
-
-
-#profile{
-
-background:
-
-linear-gradient(
-135deg,
-#111,
-#a31621
-);
-
-color:white;
-
-padding:25px;
-
-border-radius:20px;
-
-text-align:center;
-
-}
-
-
-
-#profile h3{
-
-color:white;
-
-}
-
-
-
-
-
-/* INPUTS */
-
+/* ==========================================
+   Forms
+========================================== */
 
 input,
 textarea,
 select{
-
-width:100%;
-
-padding:14px;
-
-margin:8px 0;
-
-border-radius:14px;
-
-border:1px solid #ddd;
-
-font-size:16px;
-
-outline:none;
-
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid var(--border-subtle);
+    background:var(--bg-card);
+    color:white;
+    outline:none;
 }
-
-
 
 input:focus,
-textarea:focus{
-
-border-color:var(--primary);
-
+textarea:focus,
+select:focus{
+    border-color:var(--primary-red);
 }
 
 
+/* ==========================================
+   Profile
+========================================== */
 
-
-
-/* BUTTONS */
-
-
-button{
-
-width:100%;
-
-padding:14px;
-
-margin-top:10px;
-
-border:none;
-
-border-radius:14px;
-
-background:var(--primary);
-
-color:white;
-
-font-size:16px;
-
-font-weight:bold;
-
-cursor:pointer;
-
+.profile-card{
+    text-align:center;
+    padding:20px;
 }
 
 
+/* ==========================================
+   Online Status
+========================================== */
 
-button:hover{
+.online{
+    color:#22c55e;
+    font-weight:bold;
+}
 
-transform:translateY(-1px);
-
-opacity:.9;
-
+.offline{
+    color:#999;
 }
 
 
+/* ==========================================
+   Empty State
+========================================== */
 
-
-
-/* USER + GROUP CARDS */
-
-
-.user-card,
-.group-card{
-
-background:white;
-
-padding:18px;
-
-margin:12px 0;
-
-border-radius:20px;
-
-box-shadow:
-
-0 5px 15px rgba(0,0,0,.08);
-
-text-align:center;
-
+.empty-state,
+.loading{
+    text-align:center;
+    color:var(--text-muted);
+    padding:30px;
 }
 
 
-
-
-
-.user-image{
-
-width:85px;
-
-height:85px;
-
-border-radius:50%;
-
-object-fit:cover;
-
-border:3px solid var(--primary);
-
-}
-
-
-
-
-
-/* GROUP SECTION */
-
-
-#groups{
-
-max-height:500px;
-
-overflow-y:auto;
-
-}
-
-
-
-.group-card h3{
-
-color:var(--primary);
-
-}
-
-
-
-
-
-/* CHAT */
-
-
-#messages{
-
-height:55vh;
-
-max-height:450px;
-
-overflow-y:auto;
-
-display:flex;
-
-flex-direction:column;
-
-padding:15px;
-
-background:#eeeeee;
-
-border-radius:20px;
-
-}
-
-
-
-
-.message{
-
-max-width:75%;
-
-padding:12px;
-
-margin:8px 0;
-
-border-radius:20px;
-
-line-height:1.4;
-
-position:relative;
-
-}
-
-
-
-.sent{
-
-align-self:flex-end;
-
-background:var(--primary);
-
-color:white;
-
-border-bottom-right-radius:5px;
-
-}
-
-
-
-.received{
-
-align-self:flex-start;
-
-background:white;
-
-border:1px solid #ddd;
-
-border-bottom-left-radius:5px;
-
-}
-
-
-
-
-.message small{
-
-font-size:11px;
-
-opacity:.7;
-
-}
-
-
-
-
-
-/* CHAT INPUT */
-
-
-.chat-input{
-
-display:flex;
-
-gap:10px;
-
-}
-
-
-
-.chat-input input{
-
-margin:0;
-
-}
-
-
-
-.chat-input button{
-
-width:100px;
-
-}
-
-
-
-
-
-/* CHAT LIST */
-
-
-.chat-card{
-
-display:flex;
-
-align-items:center;
-
-gap:15px;
-
-background:white;
-
-padding:15px;
-
-border-radius:18px;
-
-margin:10px 0;
-
-box-shadow:
-
-0 4px 12px rgba(0,0,0,.08);
-
-}
-
-
-
-.chat-info{
-
-flex:1;
-
-text-align:left;
-
-}
-
-
-
-
-
-/* NOTIFICATIONS */
-
-
-#notifications{
-
-max-height:350px;
-
-overflow-y:auto;
-
-}
-
-
-
-
-.notification-card{
-
-background:white;
-
-padding:15px;
-
-border-radius:15px;
-
-margin:10px 0;
-
-box-shadow:0 3px 10px #0002;
-
-}
-
-
-
-
-
-/* IMAGE VIEWER */
-
+/* ==========================================
+   Image Viewer
+========================================== */
 
 #imageViewer{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.9);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
 
-position:fixed;
-
-inset:0;
-
-display:none;
-
-justify-content:center;
-
-align-items:center;
-
-z-index:9999;
-
+#imageViewer img{
+    max-width:90%;
+    max-height:90%;
+    border-radius:12px;
 }
 
 
+/* ==========================================
+   Scrollbar
+========================================== */
 
-#imageOverlay{
+::-webkit-scrollbar{
+    width:6px;
+}
 
-position:absolute;
-
-inset:0;
-
-background:rgba(0,0,0,.7);
-
-backdrop-filter:blur(10px);
-
+::-webkit-scrollbar-thumb{
+    background:#444;
+    border-radius:20px;
 }
 
 
+/* ==========================================
+   Responsive
+========================================== */
 
-#fullImage{
+@media(max-width:480px){
 
-position:relative;
+    .user-card{
+        padding:14px;
+    }
 
-width:320px;
+    .message-text{
+        max-width:90%;
+    }
 
-height:320px;
-
-max-width:85vw;
-
-border-radius:50%;
-
-object-fit:cover;
-
-border:5px solid white;
-
-z-index:2;
-
-}
-
-
-
-
-/* DELETE BUTTONS */
-
-
-.delete-message,
-.delete-global-message{
-
-width:auto;
-
-background:#111;
-
-padding:6px 12px;
-
-font-size:12px;
-
-border-radius:10px;
-
-}
-
-
-
-
-
-.delete-message:hover,
-.delete-global-message:hover{
-
-background:var(--primary);
-
-}
-
-
-
-
-/* MOBILE */
-
-
-@media(max-width:500px){
-
-
-.box{
-
-padding:20px;
-
-border-radius:20px;
-
-}
-
-
-
-h1{
-
-font-size:32px;
-
-}
-
-
-
-.chat-input{
-
-flex-direction:column;
-
-}
-
-
-
-.chat-input button{
-
-width:100%;
-
-}
-
+    .bottom-nav{
+        height:58px;
+    }
 
 }
